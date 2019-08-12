@@ -4,17 +4,29 @@
 #Its not foolproof anyone with basic linux knowledge can bypass it, just by issuing Cancel command ( ctrl + c ).
 #Version: 0.2
 
+int_trp() {
+	echo "Interrupted"
+	sleep 3
+	kill -9 $PPID
+}
+
+trap 'int_trp' INT
+
 echo "Username"
 read n
 echo "Password"
 read -s p
 
-if [[ $n == "Ali" && $p == "Sars" ]]; 		#enter your credentials here
+#enter your credentials here
+if [[ $n == "Ali" && $p == "Sars" ]];
 then
 echo "Access Granted!"
 
 else
 echo "Un-Authorized User... Exiting"
 sleep 3
-kill -9 $PPID 			#kills the parent process id i.e., the app itself
+#kills the parent process id i.e., the app itself.
+kill -9 $PPID 
 fi
+
+trap SIGINT
