@@ -1,8 +1,8 @@
 #! /bin/bash
 #Simple login script which asks for the predefined usrnm & pswd
 #it terminates the app if credentials dont match.
-#Its not foolproof anyone with basic linux knowledge can bypass it, just by issuing Cancel command ( ctrl + c ).
-#Version: 0.2
+#It has improved now, but still not totally foolproof. 
+#Version: 0.3
 
 int_trp() {
 	echo "Interrupted"
