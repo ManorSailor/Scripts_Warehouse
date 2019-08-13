@@ -1,7 +1,7 @@
 #! /bin/bash
-#Login script which asks for the usrnm & pswd which the user defines, it terminates the app if credentials dont match.
+#Login script which asks for the usrnm & pswd defined by the user, it terminates the app if credentials dont match.
 #It has improved now, but still not totally foolproof. 
-#Version: 0.3
+#Version: 0.4
 
 #Path where the valuables are stored.
 pt=../usr/share/.login
