@@ -1,7 +1,7 @@
 #! /bin/bash
 #Login script which asks for the usrnm & pswd defined by the user, it terminates the app if credentials dont match.
 #It has improved now, but still not totally foolproof. 
-#Version: 0.5
+#Version: 0.6
 
 #Path where the valuables are stored.
 pt=../usr/share/.login
@@ -73,7 +73,7 @@ chk_crd() {
 	unm=$( head -n 1 $pt )
 	p=$( tail -n 1 $pt )
 
-	echo "Enter Un"
+	echo "Enter Username"
 	read n
 	echo "Enter Passwd"
 	read -s pss
