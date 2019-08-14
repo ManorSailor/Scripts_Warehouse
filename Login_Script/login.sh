@@ -1,7 +1,7 @@
 #! /bin/bash
 #Login script which asks for the usrnm & pswd defined by the user, it terminates the app if credentials dont match.
 #It has improved now, but still not totally foolproof. 
-#Version: 0.4
+#Version: 0.5
 
 #Path where the valuables are stored.
 pt=../usr/share/.login
@@ -36,6 +36,7 @@ int_trp() {
 #Function for checking if the user is authorized.
 chk_crd() {
 	trap 'int_trp' INT
+	chmod u+rw $pt
 
 	unm=$( head -n 1 $pt )
 	p=$( tail -n 1 $pt )
@@ -54,6 +55,7 @@ chk_crd() {
 		sleep 3
 		kill -9 $PPID
 	fi
+	chmod u-rw $pt
 }
 
 #Checks if the user is running the script for first time, it's not the proper way of doing this i guess but for now it works :P
