@@ -26,11 +26,43 @@ st_crd() {
 
 }
 
-#Trap the intruder ;)
+#Function for re-setting credentials
+rst_crd() {
+	read -p "Enter Old Usrname OR Password: " old
+
+	#Read the cred.
+	unm=$( head -n 1 $pt )
+	p=$( tail -n 1 $pt )
+
+	if [[ $old == $unm || $old == $p ]];
+	then
+		echo -e "\nClearing your Old Credentials..."
+		rm -rf $pt
+		echo -e "\nCleared! Please add your new credentials"
+		st_crd
+
+	else
+		echo -e "\nOh, you remember your Credentials? :o"
+		echo -e "\nClosing app, re-launch it please"
+		sleep 3
+		kill -9 $PPID
+	fi
+}
+
+#Trap the intruder & check if user wants to reset Credentials ;)
 int_trp() {
-	echo "Intruder Alert!!"
-	sleep 3
-	kill -9 $PPID
+	echo -e "\nForgot your Credentials?"
+	read ans
+
+	if [[ $ans == "yes" || $ans == "y" || $ans == "Y" || $ans == "Yes" ]];
+	then
+		rst_crd
+
+	else
+		echo "Intruder Alert!!"
+		sleep 3
+		kill -9 $PPID
+	fi
 }
 
 #Function for checking if the user is authorized.
@@ -62,6 +94,7 @@ chk_crd() {
 if [ -f "$pt" ];
 then
 	chk_crd
+
 else
 	st_crd
 fi
