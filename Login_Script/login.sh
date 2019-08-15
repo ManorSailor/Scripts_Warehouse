@@ -60,6 +60,7 @@ int_trp() {
 
 	else
 		echo "Intruder Alert!!"
+		chmod u-rw $pt
 		sleep 3
 		kill -9 $PPID
 	fi
