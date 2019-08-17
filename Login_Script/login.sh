@@ -1,7 +1,8 @@
 #! /bin/bash
-#Login script which asks for the usrnm & pswd defined by the user, it terminates the app if credentials dont match.
-#It has improved now, but still not totally foolproof. 
-#Version: 0.6
+#Simple Login script made in $Bash!
+#It has improved a lot than before, but still insecure :P
+#Written by Sars!
+#Version: 0.8
 
 #Path where the valuables are stored.
 pt=../usr/share/.login
@@ -10,13 +11,13 @@ opt=../usr/tmp/.tmplog
 
 #Function for encrypting & decrypting cred.
 encrypt() {
-openssl enc -aes-256-cbc -pbkdf2 -salt -in $opt -out $pt -k $pf
+openssl enc -aes-256-cbc -pbkdf2 -salt -in $opt -out $pt -k $pf 2>/dev/null #Redirects error if any to /dev/null. Thanks to https://stackoverflow.com/a/25348167
 chmod u-rw $pt
 }
 
 decrypt() {
 chmod u+rw $pt
-openssl enc -d -aes-256-cbc -pbkdf2 -salt -in $pt -out $opt -k $pss $old
+openssl enc -d -aes-256-cbc -pbkdf2 -salt -in $pt -out $opt -k $pss 2>/dev/null #Redirects bad-decrypts error if any to /dev/null. Thanks to https://stackoverflow.com/a/25348167
 }
 
 #Function that sets credentials.
@@ -37,7 +38,6 @@ st_crd() {
 	        echo -e "\nCredentials added!!"
 		encrypt
 		echo -e "\nExiting Termux, please restart it!"
-		chmod u-rw $pt
 		sleep 3
 		kill -9 $PPID
 	else
@@ -49,13 +49,13 @@ st_crd() {
 
 #Function for re-setting credentials.
 rst_crd() {
-	read -p "Enter Old Password: " old
+	read -p "Enter Old Password: " pss
 	decrypt
 
 	#Read the old pass.
-	p=$( tail -n 1 $opt )
+	op=$( tail -n 1 $opt 2>/dev/null )
 
-	if [[ $old == $p ]];
+	if [[ $pss == $op && $pss != "" ]];
 	then
 		echo -e "\nClearing your Old Credentials..."
 		rm -rf $pt
@@ -99,12 +99,18 @@ chk_crd() {
 	read -s pss
 	decrypt
 
-	unm=$( head -n 1 $opt )
-	p=$( tail -n 1 $opt )
+	unm=$( head -n 1 $opt 2>/dev/null )
+	p=$( tail -n 1 $opt 2>/dev/null )
 
-	if [[ $n == $unm && $pss == $p ]];
+	if [[ $n == "" || $pss == "" ]];
 	then
-		echo "Access Granted!"
+		echo "Please Enter your Credentials... Exiting"
+		sleep 3
+		kill -9 $PPID
+
+	elif [[ $n == $unm && $pss == $p ]];
+	then
+		echo "Welcome!"
 
 	else
 		echo "Un-Authorized User ..exiting"
@@ -112,6 +118,7 @@ chk_crd() {
 		kill -9 $PPID
 	fi
 	chmod u-rw $pt
+	rm $opt
 }
 
 #Checks if the user is running the script for first time, it's not the proper way of doing this i guess but for now it works :P
