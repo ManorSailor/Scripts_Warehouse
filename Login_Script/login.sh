@@ -55,7 +55,7 @@ rst_crd() {
 	#Read the old pass.
 	op=$( tail -n 1 $opt 2>/dev/null )
 
-	if [[ $pss == $op && $pss != "" ]];
+	if [[ $pss == "$op" && $pss != "" ]];
 	then
 		echo -e "\nClearing your Old Credentials..."
 		rm -rf $pt
@@ -108,7 +108,7 @@ chk_crd() {
 		sleep 3
 		kill -9 $PPID
 
-	elif [[ $n == $unm && $pss == $p ]];
+	elif [[ $n == "$unm" && $pss == "$p" ]];
 	then
 		echo "Welcome!"
 
