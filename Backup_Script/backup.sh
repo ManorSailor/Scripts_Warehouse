@@ -23,7 +23,7 @@ PS3="Choose: "
 #Wrapper functions.
 #######################################
 ls() {
-	command ls -lh "$dbpt"
+	command ls -lh $1
 }
 
 dl() {
@@ -31,11 +31,11 @@ dl() {
 }
 
 mkdir() {
-	command mkdir -p "$dbpt" 2>/dev/null
+	command mkdir $1 $2
 }
 
 mv() {
-	command mv "$ball" "$dbpt"
+	command mv $1 $2
 }
 ######################################
 #Wrapper functions ends here.
@@ -43,9 +43,9 @@ mv() {
 
 #Function for Backing-Up.
 tar_bup() {
-	mkdir
+	mkdir -p "$dbpt"
 	tar -czpf etc.tar.gz $ipt 2>/dev/null
-	mv
+	mv "$ball" "$dbpt"
 	sleep 1
 }
 
@@ -80,7 +80,7 @@ do
 		then
 			echo "Here is the list of all your Backups:"
 			echo
-			ls
+			ls "$dbpt"
 			echo
 	fi
 done
