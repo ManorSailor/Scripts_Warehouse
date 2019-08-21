@@ -3,7 +3,7 @@
 #Its pain in the @$$ to configure your configs, rc, aliases etc files after reinstalling Termux.
 #A Barebone script which will be improved in the near future.
 #Written by Sars!
-#0.2
+#0.3
 
 #GLOBAL VARIABLES
 #Import the config file containing backup path.
@@ -12,18 +12,18 @@ source ~/.Backup_Utility/.config
 #Path from where the files needs to be backed up.
 ipt=../usr/etc/
 
-#Move the archive to TermuxStuff
+#Move the archive to TermuxBackups
 ball=~/etc.tar.gz
 
 #Choices
-chc="Backup Restore Quit"
+chc="Backup Restore List-All Quit"
 PS3="Choose: "
 
 #######################################
-#Wrapper functions starts from here, will be utilized later in the script.
-
+#Wrapper functions.
+#######################################
 ls() {
-	command ls -lh
+	command ls -lh "$dbpt"
 }
 
 dl() {
@@ -31,36 +31,28 @@ dl() {
 }
 
 mkdir() {
-	command mkdir -p $dbpt 2>/dev/null
+	command mkdir -p "$dbpt" 2>/dev/null
 }
 
 mv() {
-	command mv $ball $dbpt
+	command mv "$ball" "$dbpt"
 }
+######################################
 #Wrapper functions ends here.
 ######################################
 
 #Function for Backing-Up.
 tar_bup() {
-
-	echo "Creating Backup....."
 	mkdir
 	tar -czpf etc.tar.gz $ipt 2>/dev/null
 	mv
 	sleep 1
-	echo
-	echo -e "Configs Backed-Up at \n$dbpt"
-	
 }
 
 #Funtcion for Restoring.
 tar_rest() {
-
-	echo "Restoring Backup..."		
 	tar -xzpf $dbpt -C ../
 	sleep 1
-	echo -e "\nConfigs Restored!"
-
 }
 
 #Display the menu
@@ -68,15 +60,27 @@ tar_rest() {
 select opt in $chc
 do
 	if [ $opt == 'Quit' ]
-	then
-		break
+		then
+			break
 
 	elif [ $opt == 'Backup' ]
-	then
-		tar_bup
+		then
+			echo "Creating Backup....."
+			tar_bup
+			echo
+			echo -e "Configs Backed-Up at \n$dbpt"
 
 	elif [ $opt == 'Restore' ]
-	then
-		tar_rest
+		then
+			echo "Restoring Backup..."		
+			tar_rest
+			echo -e "\nConfigs Restored!"
+
+	elif [ $opt == 'List-All' ]
+		then
+			echo "Here is the list of all your Backups:"
+			echo
+			ls
+			echo
 	fi
 done
