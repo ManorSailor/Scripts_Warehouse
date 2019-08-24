@@ -12,47 +12,79 @@ source ~/.Backup_Utility/.config
 #Path from where the files needs to be backed up.
 ipt=../usr/etc/
 
-#Move the archive to TermuxBackups
-ball=~/etc.tar.gz
-
 #Choices
 chc="Backup Restore List-All Quit"
 PS3="Choose: "
 
 #######################################
-#Wrapper functions.
+#Wrapper/Helper functions STARTS.
 #######################################
 ls() {
-	command ls -lh $1
+	command ls -lh "$1"
 }
 
-dl() {
-	rm -r
+rm() {
+	command rm -r "$1" "$2"
 }
 
 mkdir() {
-	command mkdir $1 $2
+	command mkdir "$1" "$2" 2>/dev/null
 }
 
 mv() {
-	command mv $1 $2
+	command mv "$1" "$2"
 }
 ######################################
-#Wrapper functions ends here.
+#Wrapper/Helper functions ENDS.
 ######################################
+
+#Fucntion to set backup file name.
+st_nm() {
+	read -p "Enter the Name for backup file: " nm
+
+	if [[ -n "$nm" ]];
+		then
+			echo -e "\nName has been set!"
+			nm="$nm".tar.gz
+
+	else
+			echo -e "\nUsing default name for backup file"
+			nm="etc.tar.gz"
+	fi
+}
+
+#Read the backup file name.
+rd_nm() {
+	echo -e "\nHere is the list of Backups: "
+	ls "$dbpt"
+	echo
+
+	cd "$dbpt"
+	read -p "Enter name of the file to Restore: " nme
+
+	if [[ -n "$nme" ]];
+		then
+			echo -e "\nRestoring..."
+			nme="$nme".tar.gz
+
+	else 
+			echo -e "\nNo file exists with the name: $nme"
+			exit
+	fi		
+}
 
 #Function for Backing-Up.
 tar_bup() {
 	mkdir -p "$dbpt"
-	tar -czpf etc.tar.gz $ipt 2>/dev/null
-	mv "$ball" "$dbpt"
-	sleep 1
+	st_nm
+	tar -czpf "$nm" $ipt 2>/dev/null
+	mv "$nm" "$dbpt"
 }
 
 #Funtcion for Restoring.
 tar_rest() {
-	tar -xzpf $dbpt -C ../
-	sleep 1
+	rd_nm
+	tar -xzpf "$nme" -C ../ 2>/dev/null
 }
 
 #Display the menu
@@ -65,14 +97,14 @@ do
 
 	elif [ $opt == 'Backup' ]
 		then
-			echo "Creating Backup....."
+			echo -e "\nCreating Backup....."
 			tar_bup
 			echo
 			echo -e "Configs Backed-Up at \n$dbpt"
 
 	elif [ $opt == 'Restore' ]
 		then
-			echo "Restoring Backup..."		
+			echo -e "\nRestoring Backup..."		
 			tar_rest
 			echo -e "\nConfigs Restored!"
 
