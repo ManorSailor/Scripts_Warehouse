@@ -13,18 +13,18 @@ source ~/.Backup_Utility/.config
 ipt=../usr/etc/
 
 #Choices
-chc="Backup Restore List-All Quit"
+chc="Backup Restore List-all Remove Quit"
 PS3="Choose: "
 
 #######################################
 #Wrapper/Helper functions STARTS.
 #######################################
 ls() {
-	command ls -lh "$1"
+	command ls -lh "$1" 2>/dev/null
 }
 
 rm() {
-	command rm -r "$1" "$2"
+	command rm -r "$1" "$2" 2>/dev/null
 }
 
 mkdir() {
@@ -32,7 +32,7 @@ mkdir() {
 }
 
 mv() {
-	command mv "$1" "$2"
+	command mv "$1" "$2" 2>/dev/null
 }
 ######################################
 #Wrapper/Helper functions ENDS.
@@ -40,16 +40,43 @@ mv() {
 
 #Check if file exists.
 chk_file() {
-	    read -p "Enter File Name: " nme
+ 	if [[ -f "$flnm" ]];
+ 	    then
+ 	        return 0
+ 	        
+	elif [[ -z "$flnm" ]];
+		then
+			echo -e "\nPlease Enter Filename!"
+			exit
 
- 	    if [[ -f "$nme" ]];
- 	        then
- 	            return 0
- 	    else
-  	            echo -e "\n$nme File not found!"
-             	exit
-	 	fi
- }
+ 	else
+  	        echo -e "\n$flnm File not found!"
+            exit
+	fi
+}
+
+#Function for removing Backup files.
+rm_file() {
+	read -p "Enter Filename: " flnm
+	chk_file
+	echo
+	read -p "Are you sure you want to remove $flnm?: " ans
+
+	if [[ "$ans" == "Yes" || "$ans" == "Y" || "$ans" == "y" || "$ans" == "yes" ]];
+		then
+			rm "$flnm"
+			echo -e "\nRemoved!"
+
+	elif [[ -z "$ans" ]];
+		then
+			echo -e "\nEmpty string! Aborting..."
+			exit
+
+	else
+		echo -e "\nAborting.."
+		exit
+	fi		
+}
 
 #Fucntion to set backup file name.
 st_nm() {
@@ -68,46 +95,62 @@ st_nm() {
 tar_bup() {
 	mkdir -p "$dbpt"
 	st_nm
-	tar -czpf "$nm".tar.gz $ipt 2>/dev/null
+	tar -czpf "$nm" $ipt 2>/dev/null
 	mv "$nm" "$dbpt"
+}
+
+#Fix tar cannot create symlink error, cause android's storage filesystem format doesnt support moving/copying symlinks
+fix_rest() {
+	cd "$dbpt"
+	cp "$flnm" "$HOME"
+	cd "$HOME"
 }
 
 #Funtcion for Restoring.
 tar_rest() {
- 	cd "$dbpt"
+	read -p "Enter File Name: " flnm
+	fix_rest
 	chk_file
-	tar -xzpf "$nme".tar.gz -C ../ 2>/dev/null
+	tar -xzpf "$flnm" -C ../ 2>/dev/null
+	rm "$flnm"
 }
 
 #Display the menu
-COLUMNS=5
-select opt in $chc
+#COLUMNS=5
+select opt in $chc 
 do
-	if [ $opt == 'Quit' ]
+	if [[ "$opt" == 'Quit' ]]; 2>/dev/null
 		then
 			break
 
-	elif [ $opt == 'Backup' ]
+	elif [[ "$opt" == 'Backup' ]]; 2>/dev/null
 		then
 			echo -e "\nCreating Backup....."
 			tar_bup
 			echo
 			echo -e "Configs Backed-Up at \n$dbpt"
 
-	elif [ $opt == 'Restore' ]
+	elif [[ "$opt" == 'Restore' ]]; 2>/dev/null
 		then
 			echo -e "\nRestoring Backup..."	
-			echo -e "\nHere is the list of Backups: " 
+			echo -e "\nHere is the list of all your Backups: " 
 			ls "$dbpt"
 			echo		
 			tar_rest
 			echo -e "\nConfigs Restored!"
 
-	elif [ $opt == 'List-All' ]
+	elif [[ "$opt" == 'List-all' ]]; 2>/dev/null
 		then
 			echo "Here is the list of all your Backups:"
 			echo
 			ls "$dbpt"
 			echo
+
+	elif [[ "$opt" == 'Remove' ]]; 2>/dev/null
+		then
+			cd "$dbpt"
+			echo -e "\nHere is the list of all your Backups: "
+			ls "$dbpt"
+			rm_file
 	fi
 done
