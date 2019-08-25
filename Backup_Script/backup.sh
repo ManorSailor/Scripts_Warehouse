@@ -3,7 +3,7 @@
 #Its pain in the @$$ to configure your configs, rc, aliases etc files after reinstalling Termux.
 #A Barebone script which will be improved in the near future.
 #Written by Sars!
-#0.3
+#0.4
 
 #GLOBAL VARIABLES
 #Import the config file containing backup path.
@@ -38,6 +38,19 @@ mv() {
 #Wrapper/Helper functions ENDS.
 ######################################
 
+#Check if file exists.
+chk_file() {
+	    read -p "Enter File Name: " nme
+
+ 	    if [[ -f "$nme" ]];
+ 	        then
+ 	            return 0
+ 	    else
+  	            echo -e "\n$nme File not found!"
+             	exit
+	 	fi
+ }
+
 #Fucntion to set backup file name.
 st_nm() {
 	read -p "Enter the Name for backup file: " nm
@@ -45,50 +58,29 @@ st_nm() {
 	if [[ -n "$nm" ]];
 		then
 			echo -e "\nName has been set!"
-			nm="$nm".tar.gz
-
 	else
 			echo -e "\nUsing default name for backup file"
-			nm="etc.tar.gz"
+			nm="etc"
 	fi
-}
-
-#Read the backup file name.
-rd_nm() {
-	echo -e "\nHere is the list of Backups: "
-	ls "$dbpt"
-	echo
-
-	cd "$dbpt"
-	read -p "Enter name of the file to Restore: " nme
-
-	if [[ -n "$nme" ]];
-		then
-			echo -e "\nRestoring..."
-			nme="$nme".tar.gz
-
-	else 
-			echo -e "\nNo file exists with the name: $nme"
-			exit
-	fi		
 }
 
 #Function for Backing-Up.
 tar_bup() {
 	mkdir -p "$dbpt"
 	st_nm
-	tar -czpf "$nm" $ipt 2>/dev/null
+	tar -czpf "$nm".tar.gz $ipt 2>/dev/null
 	mv "$nm" "$dbpt"
 }
 
 #Funtcion for Restoring.
 tar_rest() {
-	rd_nm
-	tar -xzpf "$nme" -C ../ 2>/dev/null
+ 	cd "$dbpt"
+	chk_file
+	tar -xzpf "$nme".tar.gz -C ../ 2>/dev/null
 }
 
 #Display the menu
-#COLUMNS=0
+COLUMNS=5
 select opt in $chc
 do
 	if [ $opt == 'Quit' ]
@@ -104,7 +96,10 @@ do
 
 	elif [ $opt == 'Restore' ]
 		then
-			echo -e "\nRestoring Backup..."		
+			echo -e "\nRestoring Backup..."	
+			echo -e "\nHere is the list of Backups: " 
+			ls "$dbpt"
+			echo		
 			tar_rest
 			echo -e "\nConfigs Restored!"
 
