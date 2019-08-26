@@ -3,7 +3,7 @@
 #Its pain in the @$$ to configure your configs, rc, aliases etc files after reinstalling Termux.
 #A Barebone script which will be improved in the near future.
 #Written by Sars!
-#0.4
+#0.5
 
 #GLOBAL VARIABLES
 #Import the config file containing backup path.
