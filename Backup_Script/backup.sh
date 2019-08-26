@@ -131,46 +131,46 @@ while true; do
 COLUMNS=5
 opt=$(show_menu)
 
-    case $opt in
-         "Quit")
-            break
-            ;;
+case $opt in
+	"Quit")
+		break
+		;;
 
-         "Backup")
-            echo -e "\nCreating Backup....."
-            tar_bup
-            echo
-            echo -e "Configs Backed-Up at \n$dbpt"
-            echo
-            ;;
+	"Backup")
+		echo -e "\nCreating Backup....."
+		tar_bup
+ 		echo
+ 		echo -e "Configs Backed-Up at \n$dbpt"
+		echo
+ 		;;
 
-         "Restore")
-			echo -e "\nRestoring Backup..."
-			echo -e "\nHere is the list of all your Backups:"
-			ls "$dbpt"
-			echo
-			tar_rest
-			echo -e "\nConfigs Restored!"
-			echo
+	"Restore")
+		echo -e "\nRestoring Backup..."
+		echo -e "\nHere is the list of all your Backups:"
+		ls "$dbpt"
+		echo
+		tar_rest
+		echo -e "\nConfigs Restored!"
+		echo
             ;;
             
-         "List-all")
-			echo "Here is the list of all your Backups:"
-	        echo
-	        ls "$dbpt"
-	        echo
-            ;;
+	"List-all")
+		echo "Here is the list of all your Backups:"
+		echo
+		ls "$dbpt"
+		echo
+		;;
 
-		 "Remove")
-		 	cd "$dbpt"
-		 	echo -e "\nHere is the list of all your Backups:"
-		 	ls "$dbpt"
-		 	rm_file
-            ;;
+	"Remove")
+		cd "$dbpt"
+		echo -e "\nHere is the list of all your Backups:"
+		ls "$dbpt"
+		rm_file
+		;;
             
-         *) 
-         	echo invalid option
-         	echo
-         	;;
-     esac
- done
+	*) 
+		echo invalid option
+		echo
+		;;
+	esac
+done
