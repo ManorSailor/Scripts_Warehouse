@@ -38,6 +38,15 @@ mv() {
 #Wrapper/Helper functions ENDS.
 ######################################
 
+#Show the menu
+#Allow the backups to be called defined below. Hackish way, thanks stackoverflow :P
+show_menu() {
+	select opt in ${chc[@]}; do
+	echo $opt
+	break
+	done
+}
+
 #Check if file exists.
 chk_file() {
  	if [[ -f "$flnm" ]];
@@ -57,6 +66,7 @@ chk_file() {
 
 #Function for removing Backup files.
 rm_file() {
+	echo
 	read -p "Enter Filename: " flnm
 	chk_file
 	echo
@@ -66,6 +76,7 @@ rm_file() {
 		then
 			rm "$flnm"
 			echo -e "\nRemoved!"
+			return 0
 
 	elif [[ -z "$ans" ]];
 		then
@@ -115,42 +126,51 @@ tar_rest() {
 	rm "$flnm"
 }
 
-#Display the menu
-#COLUMNS=5
-select opt in $chc 
-do
-	if [[ "$opt" == 'Quit' ]]; 2>/dev/null
-		then
-			break
+#Iterate over the menu everytime
+while true; do
+COLUMNS=5
+opt=$(show_menu)
 
-	elif [[ "$opt" == 'Backup' ]]; 2>/dev/null
-		then
-			echo -e "\nCreating Backup....."
-			tar_bup
-			echo
-			echo -e "Configs Backed-Up at \n$dbpt"
+    case $opt in
+         "Quit")
+            break
+            ;;
 
-	elif [[ "$opt" == 'Restore' ]]; 2>/dev/null
-		then
-			echo -e "\nRestoring Backup..."	
-			echo -e "\nHere is the list of all your Backups: " 
+         "Backup")
+            echo -e "\nCreating Backup....."
+            tar_bup
+            echo
+            echo -e "Configs Backed-Up at \n$dbpt"
+            echo
+            ;;
+
+         "Restore")
+			echo -e "\nRestoring Backup..."
+			echo -e "\nHere is the list of all your Backups:"
 			ls "$dbpt"
-			echo		
+			echo
 			tar_rest
 			echo -e "\nConfigs Restored!"
-
-	elif [[ "$opt" == 'List-all' ]]; 2>/dev/null
-		then
+			echo
+            ;;
+            
+         "List-all")
 			echo "Here is the list of all your Backups:"
-			echo
-			ls "$dbpt"
-			echo
+	        echo
+	        ls "$dbpt"
+	        echo
+            ;;
 
-	elif [[ "$opt" == 'Remove' ]]; 2>/dev/null
-		then
-			cd "$dbpt"
-			echo -e "\nHere is the list of all your Backups: "
-			ls "$dbpt"
-			rm_file
-	fi
-done
+		 "Remove")
+		 	cd "$dbpt"
+		 	echo -e "\nHere is the list of all your Backups:"
+		 	ls "$dbpt"
+		 	rm_file
+            ;;
+            
+         *) 
+         	echo invalid option
+         	echo
+         	;;
+     esac
+ done
