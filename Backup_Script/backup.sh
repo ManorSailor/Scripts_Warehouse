@@ -3,7 +3,7 @@
 #Its pain in the @$$ to configure your configs, rc, aliases etc files after reinstalling Termux.
 #A Barebone script which will be improved in the near future.
 #Written by Sars!
-#0.5
+#0.6
 
 #GLOBAL VARIABLES
 #Import the config file containing backup path.
@@ -39,7 +39,7 @@ mv() {
 ######################################
 
 #Show the menu
-#Allow the backups to be called defined below. Hackish way, thanks stackoverflow :P
+#Allow the functions to be called defined below. Hackish way, thanks stackoverflow :P
 show_menu() {
 	select opt in ${chc[@]}; do
 	echo $opt
@@ -49,11 +49,11 @@ show_menu() {
 
 #Check if file exists.
 chk_file() {
- 	if [[ -f "$flnm" ]];
+ 	if [[ -f "$1" ]];
  	    then
  	        return 0
  	        
-	elif [[ -z "$flnm" ]];
+	elif [[ -z "$1" ]];
 		then
 			echo -e "\nPlease Enter Filename!"
 			exit
@@ -68,7 +68,7 @@ chk_file() {
 rm_file() {
 	echo
 	read -p "Enter Filename: " flnm
-	chk_file
+	chk_file "$flnm"
 	echo
 	read -p "Are you sure you want to remove $flnm?: " ans
 
@@ -121,7 +121,7 @@ fix_rest() {
 tar_rest() {
 	read -p "Enter File Name: " flnm
 	fix_rest
-	chk_file
+	chk_file "$flnm"
 	tar -xzpf "$flnm" -C ../ 2>/dev/null
 	rm "$flnm"
 }
