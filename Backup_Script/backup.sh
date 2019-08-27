@@ -13,7 +13,7 @@ source ~/.Backup_Utility/.config
 ipt=../usr/etc/
 
 #Choices
-chc="Backup Restore List-all Remove Quit"
+chc="Backup Restore List-all Custom-path Remove Quit"
 PS3="Choose: "
 
 #######################################
@@ -43,6 +43,41 @@ mv() {
 show_menu() {
 	select opt in ${chc[@]}; do
 	echo $opt
+	break
+	done
+}
+
+#Check if Directory exists.
+chk_dir() {
+	if [[ -d "$1" ]];
+		then
+			echo -e "\nDirectory Exists!"
+			show_menu
+
+	elif [[ ! -d "$1" ]];
+		then
+			mkdir "$1"
+			echo -e "\nDirectory Created!!"
+			return 0
+
+	else
+			echo -e "\nUnknown Input $1"
+			exit
+	fi
+}
+
+#Function to set user defined custom backup paths.
+cst_bpt() {
+	echo
+	read -p "Enter new Default Backup Path (Absolute): " cbpt
+	chk_dir "$cbpt"
+
+	while true; do
+		unset -f "$dbpt"
+		$dbpt=""
+		dbpt="$cbpt"
+		sed -i "s%cbpt=%cbpt=$cbpt%" .Backup_Utility/.config #Big thanks to this user, https://serverfault.com/a/857495
+		echo -e "\nDefault Backup-Path is now: $cbpt"
 	break
 	done
 }
@@ -166,6 +201,10 @@ case $opt in
 		echo -e "\nHere is the list of all your Backups:"
 		ls "$dbpt"
 		rm_file
+		;;
+
+	"Custom-path")
+		cst_bpt
 		;;
             
 	*) 
