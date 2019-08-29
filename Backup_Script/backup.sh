@@ -73,13 +73,46 @@ cst_bpt() {
 	chk_dir "$cbpt"
 
 	while true; do
-		unset -f "$dbpt"
-		$dbpt=""
-		dbpt="$cbpt"
-		sed -i "s%cbpt=%cbpt=$cbpt%" .Backup_Utility/.config #Big thanks to this user, https://serverfault.com/a/857495
+		sed -i "s%cbpt=%cbpt=~/$cbpt%" .Backup_Utility/.config #Big thanks to this user, https://serverfault.com/a/857495
 		echo -e "\nDefault Backup-Path is now: $cbpt"
 	break
 	done
+}
+
+#Read the config file & call functions accordingly.
+read_cfg() {
+	if [[ -z "$cbpt" && "$1" == 'Backup' ]];
+ 		then
+        	tar_bup "$dbpt"
+
+	elif [[ -z "$cbpt" && "$1" == 'Restore' ]];
+    	then
+        	tar_rest "$dbpt"
+
+	elif [[ -n "$cbpt" && "$1" == 'Backup' ]];
+    	then
+        	tar_bup "$cbpt"
+
+ 	elif [[ -n "$cbpt" && "$1" == 'Restore' ]];
+    	then
+        	tar_rest "$cbpt"
+
+    elif [[ -z "$cbpt" && "$1" == 'List-all' ]];
+    	then
+    		ls "$dbpt"
+
+    elif [[ -n "$cbpt" && "$1" == 'List-all' ]];
+    	then
+    		ls "$cbpt"
+
+    elif [[ -z "$cbpt" && "$1" == 'Remove' ]];
+    	then
+    		rm_file "$dbpt"
+
+    elif [[ -n "$cbpt" && "$1" == 'Remove' ]];
+    	then
+    		rm_file "$cbpt"
+    fi
 }
 
 #Check if file exists.
@@ -101,7 +134,12 @@ chk_file() {
 
 #Function for removing Backup files.
 rm_file() {
+	cd "$1"
+	echo "$1"
+	echo -e "\nHere is the list of all your Backups:"
+	ls "$1"
 	echo
+	
 	read -p "Enter Filename: " flnm
 	chk_file "$flnm"
 	echo
@@ -139,23 +177,27 @@ st_nm() {
 
 #Function for Backing-Up.
 tar_bup() {
-	mkdir -p "$dbpt"
+	mkdir -p "$1"
 	st_nm
 	tar -czpf "$nm" $ipt 2>/dev/null
-	mv "$nm" "$dbpt"
+	mv "$nm" "$1"
+	echo -e "Configs Backed-Up at \n$1"
 }
 
 #Fix tar cannot create symlink error, cause android's storage filesystem format doesnt support moving/copying symlinks
 fix_rest() {
-	cd "$dbpt"
-	cp "$flnm" "$HOME"
+	cd "$1"
+	cp "$2" "$HOME" 2>/dev/null
 	cd "$HOME"
 }
 
 #Funtcion for Restoring.
 tar_rest() {
+	echo -e "\nHere is the list of all your Backups:"
+	ls "$1"
+	echo
 	read -p "Enter File Name: " flnm
-	fix_rest
+	fix_rest "$1" "$flnm"
 	chk_file "$flnm"
 	tar -xzpf "$flnm" -C ../ 2>/dev/null
 	rm "$flnm"
@@ -173,38 +215,32 @@ case $opt in
 
 	"Backup")
 		echo -e "\nCreating Backup....."
-		tar_bup
+		read_cfg 'Backup'
  		echo
- 		echo -e "Configs Backed-Up at \n$dbpt"
-		echo
  		;;
 
 	"Restore")
 		echo -e "\nRestoring Backup..."
-		echo -e "\nHere is the list of all your Backups:"
-		ls "$dbpt"
-		echo
-		tar_rest
+		read_cfg 'Restore'
 		echo -e "\nConfigs Restored!"
 		echo
-            ;;
+        ;;
             
 	"List-all")
 		echo "Here is the list of all your Backups:"
 		echo
-		ls "$dbpt"
+		read_cfg 'List-all'
 		echo
 		;;
 
 	"Remove")
-		cd "$dbpt"
-		echo -e "\nHere is the list of all your Backups:"
-		ls "$dbpt"
-		rm_file
+		read_cfg 'Remove'
+		echo
 		;;
 
 	"Custom-path")
 		cst_bpt
+		echo
 		;;
             
 	*) 
