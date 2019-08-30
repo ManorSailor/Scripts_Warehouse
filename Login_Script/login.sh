@@ -2,7 +2,7 @@
 #Simple Login script made in $Bash!
 #It has improved a lot than before, but still insecure :P
 #Written by Sars!
-#Version: 0.8
+#Version: 0.9
 
 #Path where the valuables are stored.
 pt=../usr/share/.login
