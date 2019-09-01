@@ -1,9 +1,7 @@
 #! /bin/bash
-#Script for backing-up and reinstalling configs, .rc files.
-#Its pain in the @$$ to configure your configs, rc, aliases etc files after reinstalling Termux.
-#A Barebone script which will be improved in the near future.
+#Script for Backing Up and restoring Termux environment.
 #Written by Sars!
-#0.7
+#0.8
 
 #GLOBAL VARIABLES
 #Import the config file containing backup path.
