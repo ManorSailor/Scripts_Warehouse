@@ -1,8 +1,7 @@
 #! /bin/bash
-#Simple Login script made in $Bash!
-#It has improved a lot than before, but still insecure :P
+#Login script made in $Bash!
 #Written by Sars!
-#Version: 0.9
+#Version: 1.0
 
 #Path where the valuables are stored.
 pt=../usr/share/.login
