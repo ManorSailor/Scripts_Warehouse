@@ -9,9 +9,6 @@
 #Import the config file containing backup path.
 source ~/.Backup_Utility/.config
 
-#Path from where the files needs to be backed up.
-ipt=../usr/etc/
-
 #Choices
 chc="Backup Restore List-all Custom-path Remove Quit"
 PS3="Choose: "
@@ -69,7 +66,7 @@ chk_dir() {
 #Function to set user defined custom backup paths.
 cst_bpt() {
 	echo
-	read -p "Enter new Default Backup Path (Absolute): " cbpt
+	read -p "Enter Absolute path for storing Backups: " cbpt
 	chk_dir "$cbpt"
 
 	while true; do
@@ -83,7 +80,7 @@ cst_bpt() {
 read_cfg() {
 	if [[ -z "$cbpt" && "$1" == 'Backup' ]];
  		then
-        	tar_bup "$dbpt"
+        	bup_type "$dbpt"
 
 	elif [[ -z "$cbpt" && "$1" == 'Restore' ]];
     	then
@@ -91,7 +88,7 @@ read_cfg() {
 
 	elif [[ -n "$cbpt" && "$1" == 'Backup' ]];
     	then
-        	tar_bup "$cbpt"
+        	bup_type "$cbpt"
 
  	elif [[ -n "$cbpt" && "$1" == 'Restore' ]];
     	then
@@ -135,7 +132,6 @@ chk_file() {
 #Function for removing Backup files.
 rm_file() {
 	cd "$1"
-	echo "$1"
 	echo -e "\nHere is the list of all your Backups:"
 	ls "$1"
 	echo
@@ -175,11 +171,33 @@ st_nm() {
 	fi
 }
 
+#Choose Backup-Type.
+bup_type() {
+	echo -e "\nFull Backup: Backs-Up Both /home and /usr"
+	echo -e "\nHalf Backup: Backs-Up /usr/etc/ only."
+	echo	
+	read -p "Full or Half: " ans
+
+	if [[ "$ans" == "Full" && ! -z "$ans" ]];
+		then
+			echo -e "\nFull Backup Initiated"
+			tar_bup "$1" "$fbup"
+
+	elif [[ "$ans" == "Half" && ! -z "$ans" ]];
+		then
+			echo -e "\nHalf-Backup Initiated"
+			tar_bup "$1" "$hbup"
+
+	else
+			show_menu
+	fi
+}
+
 #Function for Backing-Up.
 tar_bup() {
 	mkdir -p "$1"
 	st_nm
-	tar -czpf "$nm" $ipt 2>/dev/null
+	tar -czpf "$nm" "$2" 2>/dev/null
 	mv "$nm" "$1"
 	echo -e "Configs Backed-Up at \n$1"
 }
