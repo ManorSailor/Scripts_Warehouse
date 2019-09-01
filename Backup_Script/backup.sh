@@ -53,7 +53,7 @@ chk_dir() {
 		then
 			mkdir "$1"
 			echo -e "\nDirectory Created!!"
-			return
+			return 1
 
 	else
 			echo -e "\nUnknown Input $1"
