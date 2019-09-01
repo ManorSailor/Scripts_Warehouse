@@ -1,5 +1,7 @@
 #! /bin/bash
-#Script for Backing Up and restoring Termux environment.
+#Script for backing-up and reinstalling configs, .rc files.
+#Its pain in the @$$ to configure your configs, rc, aliases etc files after reinstalling Termux.
+#A Barebone script which will be improved in the near future.
 #Written by Sars!
 #0.8
 
@@ -44,16 +46,16 @@ show_menu() {
 
 #Check if Directory exists.
 chk_dir() {
-	if [[ -d "$1" ]];
+	if [[ -d "$1" && -n "$1" ]];
 		then
 			echo -e "\nDirectory Exists!"
 			show_menu
 
-	elif [[ ! -d "$1" ]];
+	elif [[ ! -d "$1" && -n "$1" ]];
 		then
 			mkdir "$1"
 			echo -e "\nDirectory Created!!"
-			return 0
+			return
 
 	else
 			echo -e "\nUnknown Input $1"
@@ -67,7 +69,7 @@ cst_bpt() {
 	read -p "Enter Absolute path for storing Backups: " cbpt
 	chk_dir "$cbpt"
 
-	while true; do
+	while [[ $? -ne 0 ]]; do
 		sed -i "s%cbpt=%cbpt=~/$cbpt%" .Backup_Utility/.config #Big thanks to this user, https://serverfault.com/a/857495
 		echo -e "\nDefault Backup-Path is now: $cbpt"
 	break
