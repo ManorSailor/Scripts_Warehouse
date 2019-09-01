@@ -44,11 +44,13 @@ st_crd() {
 	then
 		touch "$pt"
 		echo -e "$un\n$pf" >> "$opt"
+		clear
 		echo -e "\nCredentials added!!"
 		encrypt "$pf"
 		err_die
 	else
 		echo
+		clear
 		echo -e "\nCredentials cannot be empty!"
 		exit
 	fi
@@ -67,7 +69,9 @@ rst_crd() {
 	then
 		echo -e "\nClearing your Old Credentials..."
 		rm -rf "$pt"
+		clear
 		echo -e "\nCleared! Please add your new credentials"
+		echo		
 		st_crd
 
 	else
@@ -83,6 +87,7 @@ int_trp() {
 
 	if [[ "$ans" == "yes" || "$ans" == "y" || "$ans" == "Y" || "$ans" == "Yes" ]];
 	then
+		clear
 		rst_crd
 
 	else
@@ -106,16 +111,19 @@ chk_crd() {
 	then
 		echo
 		echo
+		clear
 		echo "Enter your Credentials!!"
 		err_die
 
 	elif [[ "$n" == "$unm" && "$pss" == "$p" ]];
 	then
 		echo
-		echo -e "\nWelcome!"
+		clear
+		echo -e "\nWelcome $n!"
 
 	else
 		echo
+		clear
 		echo -e "\nUn-Authorized User!"
 		err_die
 	fi
