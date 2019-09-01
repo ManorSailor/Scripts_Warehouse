@@ -9,11 +9,36 @@ pt=../usr/share/.login
 #Path for temporarily storing unencrypted valuables.
 opt=../usr/tmp/.tmplog
 
+#Tput Beautify Starts.
+clr() {
+	tput setaf "$1"
+}
+
+clear() {
+	tput clear
+}
+
+bold() {
+	tput bold
+}
+
+sgr() {
+	tput sgr0
+}
+
+dim() {
+	tput dim
+}
+#Tput Beautify Ends
+
 #Helper function.
 err_die() {
-	echo -e "\nExiting..."
-	chmod u-rw "$pt"
-	rm "$opt" 2>/dev/null
+	clr "1"
+	bold
+		echo -e "\nExiting..."
+		chmod u-rw "$pt"
+		rm "$opt" 2>/dev/null
+	sgr
 	sleep 3
 	kill -9 $PPID
 }
@@ -31,6 +56,7 @@ openssl enc -d -aes-256-cbc -pbkdf2 -salt -in "$pt" -out "$opt" -k "$1" 2>/dev/n
 
 #Function that sets credentials.
 st_crd() {
+	bold
 	read -p "Set Your Username: " un
 	read -sp "Set Your Password: " pf
 
@@ -42,16 +68,25 @@ st_crd() {
 
 	if [[ -n "$un" && -n "$pf" ]];
 	then
-		touch "$pt"
-		echo -e "$un\n$pf" >> "$opt"
 		clear
-		echo -e "\nCredentials added!!"
+		bold
+		clr "2"
+			touch "$pt"
+			echo -e "$un\n$pf" >> "$opt"
+			echo "Credentials added!!"
+		sgr
+		dim
+			echo -e "\nInitiate the Cancel command, if you want to re-set."
+		sgr
 		encrypt "$pf"
 		err_die
 	else
 		echo
 		clear
-		echo -e "\nCredentials cannot be empty!"
+		bold
+		clr "3"
+			echo "Credentials cannot be empty!"
+		sgr
 		exit
 	fi
 
@@ -59,7 +94,10 @@ st_crd() {
 
 #Function for re-setting credentials.
 rst_crd() {
-	read -sp "Enter Old Password: " pss
+	clear
+	bold
+		read -sp "Enter Old Password: " pss
+	tput reset
 	decrypt "$pss"
 
 	#Read the old pass.
@@ -67,11 +105,12 @@ rst_crd() {
 
 	if [[ "$pss" == "$op" && ! -z "$pss" ]];
 	then
-		echo -e "\nClearing your Old Credentials..."
-		rm -rf "$pt"
 		clear
-		echo -e "\nCleared! Please add your new credentials"
-		echo		
+		clr "2"
+			rm -rf "$pt"
+			echo -e "\nOld Credentials, Cleared! Please add your new credentials"
+			echo		
+		sgr
 		st_crd
 
 	else
@@ -81,8 +120,12 @@ rst_crd() {
 
 #Trap the intruder & check if user wants to reset Credentials ;)
 int_trp() {
-	echo
-	echo -e "\nForgot your Credentials?"
+	tput reset #fixed a bug which causes the terminal to remain silent always.
+	bold
+	clear
+	clr "3"
+		echo "Forgot your Credentials?"
+	sgr
 	read ans
 
 	if [[ "$ans" == "yes" || "$ans" == "y" || "$ans" == "Y" || "$ans" == "Yes" ]];
@@ -97,6 +140,8 @@ int_trp() {
 
 #Function for checking if the user is authorized.
 chk_crd() {
+	bold
+
 	trap 'int_trp' INT
 	chmod u+rw "$pt"
 
@@ -110,31 +155,35 @@ chk_crd() {
 	if [[ -z "$n" || -z "$pss" ]];
 	then
 		echo
-		echo
 		clear
-		echo "Enter your Credentials!!"
 		err_die
 
 	elif [[ "$n" == "$unm" && "$pss" == "$p" ]];
 	then
-		echo
 		clear
-		echo -e "\nWelcome $n!"
+		bold
+		clr "2"
+			echo "Welcome, $n!"
+		sgr
 
 	else
 		echo
 		clear
-		echo -e "\nUn-Authorized User!"
+		bold
+		clr "1"
+			echo -e "\nUn-Authorized User!"
 		err_die
 	fi
 }
 
 #Checks if the user is running the script for first time, it's not the proper way of doing this i guess but for now it works :P
-if [ -f "$pt" ];
+if [[ -f "$pt" ]];
 then
+	clear
 	chk_crd
 
 else
+	clear
 	st_crd
 fi
 
