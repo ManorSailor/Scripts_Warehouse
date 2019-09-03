@@ -178,12 +178,12 @@ bup_type() {
 
 	if [[ "$ans" == "Full" && ! -z "$ans" ]];
 		then
-			echo -e "\nFull Backup Initiated"
+			echo -e "\nInitiating Full Backup..."
 			tar_bup "$1" "$fbup"
 
 	elif [[ "$ans" == "Half" && ! -z "$ans" ]];
 		then
-			echo -e "\nHalf-Backup Initiated"
+			echo -e "\nInitiating Half Backup..."
 			tar_bup "$1" "$hbup"
 
 	else
