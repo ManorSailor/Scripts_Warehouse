@@ -47,7 +47,7 @@ chk_dir() {
 	if [[ -d "$1" && -n "$1" ]];
 		then
 			echo -e "\nDirectory Exists!"
-			show_menu
+			bup_type "$1"
 
 	elif [[ ! -d "$1" && -n "$1" ]];
 		then
