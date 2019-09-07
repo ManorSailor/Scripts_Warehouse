@@ -172,7 +172,7 @@ st_nm() {
 #Choose Backup-Type.
 bup_type() {
 	echo -e "\nFull Backup: Backs-Up Both /home and /usr"
-	echo -e "\nHalf Backup: Backs-Up /usr/etc/ only."
+	echo -e "\nHalf Backup: Backs-Up /usr/etc & /home only."
 	echo	
 	read -p "Full or Half: " ans
 
@@ -195,7 +195,7 @@ bup_type() {
 tar_bup() {
 	mkdir -p "$1"
 	st_nm
-	tar -czpf "$nm" "$2" 2>/dev/null
+	tar -czpf "$nm" $2 2>/dev/null
 	mv "$nm" "$1"
 	echo -e "Configs Backed-Up at \n$1"
 }
