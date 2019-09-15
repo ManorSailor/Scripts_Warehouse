@@ -18,7 +18,6 @@ spk() {
 	echo -e "\n$1"
 }
 
-#Tput-ify
 bl() {
 	tput bold
 }
@@ -34,7 +33,6 @@ rul() {
 rst() {
 	tput sgr0
 }
-#Tput-ify Ends.
 
 clr() {
 	tput clear
@@ -43,51 +41,29 @@ clr() {
 
 #Functions helpful in Debugging.
 err_die() {
-	spk "Exiting via code $1" >> setup/.log
+	echo "Exiting via code $1" >> .setup/.log
 	exit "$1"
 }
 
 success() {
-	spk "$1 Succeeded!" >> setup/.log
+	echo -e "\n $1 Succeeded!" >> .setup/.log
 }
 
 fail() {
-	spk "$1 Failed" >> setup/.log
+	echo -e "\n$1 Failed" >> .setup/.log
 }
 #Ends
 
 #########################################################
 ###################### Main Stuff #######################
 #########################################################
-#Check if there is a working internet connection.
-chk_con() {
-	#Ping google to chechk for internet. Ah yes this command, thanks stackoverflow.
-	ping -c 1 google.com &> /dev/null
-		if [[ $? = 0 ]]; 
-			then
-				success "Internet available"
-				return 0
-		else
-			spk "$(bl)No Internet! Please connect to Wi-Fi or enable Mobile Data $(rst)"
-			#127.0.0.1, so no internet :P
-			err_die "127"
-		fi			
-}
-
 #First run function to configure stuff.
 first_run() {
 	while [ $? -eq 0 ]; do
-		help
-			#Get cur dir name
-			#move to the dir where the config & stuff is stored.
-			dname="$(pwd)"
-			cd $dname
-			cp -r usr ../
-		sleep 3
-	done
+			touch .config packages
+			
 }
 
-#Display the help message.
 help() {
 	clr
 	bl
@@ -107,3 +83,4 @@ help() {
 			spk "$(bl) E.g., setup -M -s or setup -M --silent $(rst)"
 	spk "That's all the help available.. for now"
 } 
+
