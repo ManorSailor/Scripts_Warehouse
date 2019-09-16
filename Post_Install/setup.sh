@@ -6,11 +6,23 @@
 #########################################################
 ################ Vars, Helpers, Imports #################
 #########################################################
+#Vars.
+#some local vars which cant be included in our confug file cause they are responsible for setting up our script in the first place.
+par_dst_dr="../usr/etc/"
+dst_dr="../usr/etc/setup/"
+cfgs="../home/Awesome-Termux/Post_Install/configs/."
+#Ends.
+
 #Imports.
-source ../usr/etc/setup/.config
-source ../usr/etc/setup/packages
-source ../usr/etc/setup/default_pack
-source ../usr/etc/setup/minimal_pack
+#importing files staright causes errors, cause they are not present.
+#We copy them over to the destination later down in the script.
+#Turned it into a function so that it can be called later, i.e., after the configs have been installed.
+imports() {
+	source ../usr/etc/setup/.config
+	source ../usr/etc/setup/packages
+	source ../usr/etc/setup/default_pack
+	source ../usr/etc/setup/minimal_pack
+}
 #Ends.
 
 #Helper Functions.
@@ -76,15 +88,12 @@ chk_con() {
 
 #First run function to configure stuff.
 first_run() {
-	while [ $? -eq 0 ]; do
-		help
-			#Get cur dir name
-			#move to the dir where the config & stuff is stored.
-			dname="$(pwd)"
-			cd $dname
-			cp -r usr ../
-		sleep 3
-	done
+	help
+		cd $par_dst_dr #move ya ass to /usr/etc
+		mkdir setup
+		cd #first come back home then go elsewhere
+		cp -r $cfgs $dst_dr
+	sleep 3
 }
 
 #Display the help message.
@@ -107,3 +116,15 @@ help() {
 			spk "$(bl) E.g., setup -M -s or setup -M --silent $(rst)"
 	spk "That's all the help available.. for now"
 } 
+
+if [[ ! -d $dst_dr ]];
+	then
+		spk "                                Welcome!\n Just configuring myself. Please bear with me, it can take a while :)"
+		chk_con
+		first_run
+
+elif [[ -d $dst_dr ]];
+	then
+		imports
+		help
+fi
