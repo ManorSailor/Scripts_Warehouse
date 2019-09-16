@@ -10,7 +10,7 @@
 #some local vars which cant be included in our confug file cause they are responsible for setting up our script in the first place.
 par_dst_dr="../usr/etc/"
 dst_dr="../usr/etc/setup/"
-cfgs="../home/Awesome-Termux/Post_Install/configs/."
+files="../home/Awesome-Termux/Post_Install/post_setup/."
 #Ends.
 
 #Imports.
@@ -18,7 +18,6 @@ cfgs="../home/Awesome-Termux/Post_Install/configs/."
 #We copy them over to the destination later down in the script.
 #Turned it into a function so that it can be called later, i.e., after the configs have been installed.
 imports() {
-	source ../usr/etc/setup/.config
 	source ../usr/etc/setup/packages
 	source ../usr/etc/setup/default_pack
 	source ../usr/etc/setup/minimal_pack
@@ -92,7 +91,7 @@ first_run() {
 		cd $par_dst_dr #move ya ass to /usr/etc
 		mkdir setup
 		cd #first come back home then go elsewhere
-		cp -r $cfgs $dst_dr
+		cp -r $files $dst_dr
 	sleep 3
 }
 
