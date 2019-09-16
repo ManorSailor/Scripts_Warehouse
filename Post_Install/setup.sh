@@ -1,7 +1,7 @@
 #!/bin/bash
 #Script to quickly set-up Termux with all of packages etc after re-installation.
 #Written by Sars!
-#0.1 Initial release.
+#0.2
 
 #########################################################
 ################ Vars, Helpers, Imports #################
@@ -117,6 +117,7 @@ help() {
 	spk "That's all the help available.. for now"
 } 
 
+#Check if the script is being run for the first time.
 if [[ ! -d $dst_dr ]];
 	then
 		spk "                                Welcome!\n Just configuring myself. Please bear with me, it can take a while :)"
