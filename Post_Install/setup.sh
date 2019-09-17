@@ -117,6 +117,7 @@ help() {
 } 
 
 #Check if the script is being run for the first time.
+cd #first return to home
 if [[ ! -d $dst_dr ]];
 	then
 		spk "                                Welcome!\n Just configuring myself. Please bear with me, it can take a while :)"
