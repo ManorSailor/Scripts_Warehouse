@@ -2,15 +2,19 @@
 #Script to quickly set-up Termux with all of packages etc after re-installation.
 #Written by Sars!
 #0.2
-
+#
 #########################################################
 ################ Vars, Helpers, Imports #################
 #########################################################
-#Vars.
-#some local vars which cant be included in our confug file cause they are responsible for setting up our script in the first place.
-par_dst_dr="../usr/etc/"
-dst_dr="../usr/etc/setup/"
-files="../home/Awesome-Termux/Post_Install/post_setup/."
+#
+#Vars
+#i don't want write such a long path again and again.
+abs_path=/data/data/com.termux/files
+local_etc="$abs_path/usr/local/etc/"
+local_bin="$abs_path/usr/local/bin/"
+fls_dir="$abs_path/home/Awesome-Termux/Post_Install/post_setup"
+post="$abs_path/home/Awesome-Termux/Post_Install/post"
+setup_dir="$abs_path/usr/local/etc/post_setup/"
 #Ends.
 
 #Imports.
@@ -18,9 +22,9 @@ files="../home/Awesome-Termux/Post_Install/post_setup/."
 #We copy them over to the destination later down in the script.
 #Turned it into a function so that it can be called later, i.e., after the configs have been installed.
 imports() {
-	source ../usr/etc/setup/packages
-	source ../usr/etc/setup/default_pack
-	source ../usr/etc/setup/minimal_pack
+	source $abs_path/usr/local/etc/post_setup/packages
+	source $abs_path/usr/local/etc/post_setup/default_pack
+	source $abs_path/usr/local/etc/post_setup/minimal_pack
 }
 #Ends.
 
@@ -54,50 +58,78 @@ clr() {
 
 #Functions helpful in Debugging.
 err_die() {
-	spk "Exiting via code $1" >> setup/.log
+	spk "Exiting via code $1" >> /setup/.log
 	exit "$1"
 }
 
 success() {
-	spk "$1 Succeeded!" >> setup/.log
+	spk "$1 Succeeded!" >> /setup/.log
 }
 
 fail() {
-	spk "$1 Failed" >> setup/.log
+	spk "$1 Failed" >> /setup/.log
 }
 #Ends
 
 #########################################################
 ###################### Main Stuff #######################
 #########################################################
+#Check for user supplied arguements.
+args() {
+	while [[ $# -le 3 ]]; do
+		case "$1" in
+			-m|--minimal)
+				_install 'minimal_pack'
+				;;
+			-d|--default)
+				_install 'default_pack'
+				;;
+			-h|--help)
+				usage
+				;;
+			-u|--user)
+				_install 'packages'
+				;;
+			*)
+				spk "$(bl)Unknown flag: $1$(rst)"
+				usage
+				break
+				;;
+		esac
+	done
+}
+
+_install() {
+	
+}
+
 #Check if there is a working internet connection.
 chk_con() {
 	#Ping google to chechk for internet. Ah yes this command, thanks stackoverflow.
 	ping -c 1 google.com &> /dev/null
-		if [[ $? = 0 ]]; 
+		if [[ $? -eq 0 ]]; 
 			then
 				success "Internet available"
 				return 0
 		else
-			spk "$(bl)No Internet! Please connect to Wi-Fi or enable Mobile Data $(rst)"
-			#127.0.0.1, so no internet :P
-			err_die "127"
+				spk "$(bl)No Internet! Please connect to Wi-Fi or enable Mobile Data $(rst)"
+				#127.0.0.1, so no internet :P
+				err_die "127"
 		fi			
 }
 
 #First run function to configure stuff.
 first_run() {
-	help
-		cd $par_dst_dr #move ya ass to /usr/etc
-		mkdir setup
-		cd #first come back home then go elsewhere
-		cp -r $files $dst_dr
-	sleep 3
+	mkdir -p $local_bin $local_etc
+	cp -r $fls_dir $local_etc
+	cp $post $local_bin
+	set_path
+		sleep 3
+		spk "$(bl)All done!$(rst)"
 }
 
 #Display the help message.
-help() {
-	clr
+usage() {
 	bl
 	echo "$(ul)SYNTAX $(rul)"
 	echo "       setup {TYPE}... {FLAG}"
@@ -116,16 +148,27 @@ help() {
 	spk "That's all the help available.. for now"
 } 
 
+#Add /usr/local/bin to $PATH
+set_path() {
+	local bashrc="$abs_path/usr/etc/bash.bashrc"
+	grep -q 'export PATH=$PATH'":$local_bin" $bashrc
+		#if last command was UNsuccessful, add the path.
+		while [[ $? -eq 1 ]]; do
+				echo -e "\nexport PATH=$PATH:$localbin" >> $bashrc
+		done
+}
+
 #Check if the script is being run for the first time.
-cd #first return to home
-if [[ ! -d $dst_dr ]];
+if [[ ! -d $setup_dir ]];
 	then
+		clr
 		spk "                                Welcome!\n Just configuring myself. Please bear with me, it can take a while :)"
 		chk_con
 		first_run
-
-elif [[ -d $dst_dr ]];
+		
+elif [[ -d $setup_dir ]];
 	then
-		imports
-		help
+		imports	
+		chk_con
+		args
 fi
