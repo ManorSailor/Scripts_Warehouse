@@ -112,21 +112,6 @@ _install() {
 	cd $HOME
 }
 
-#Check if there is a working internet connection.
-chk_con() {
-	#Ping google to chechk for internet. Ah yes this command, thanks stackoverflow.
-	ping -c 1 google.com &> /dev/null
-		if [[ $? -eq 0 ]]; 
-			then
-				success "Internet available"
-				return 0
-		else
-				spk "$(bl)No Internet! Please connect to Wi-Fi or enable Mobile Data $(rst)"
-				#127.0.0.1, so no internet :P
-				err_die "127"
-		fi			
-}
-
 #First run function to configure stuff.
 first_run() {
 	mkdir -p $local_bin $local_etc
