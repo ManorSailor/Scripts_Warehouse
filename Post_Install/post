@@ -1,10 +1,10 @@
 #!/bin/bash
 #Script to quickly set-up Termux with all of packages etc after re-installation.
 #Written by Sars!
-#0.2
+#0.3
 #
 #########################################################
-################ Vars, Helpers, Imports #################
+#################### Vars, Helpers ######################
 #########################################################
 #
 #Vars
@@ -17,16 +17,20 @@ post="$abs_path/home/Awesome-Termux/Post_Install/post"
 setup_dir="$abs_path/usr/local/etc/post_setup/"
 #Ends.
 
-#Imports.
-#importing files staright causes errors, cause they are not present.
-#We copy them over to the destination later down in the script.
-#Turned it into a function so that it can be called later, i.e., after the configs have been installed.
-imports() {
-	source $abs_path/usr/local/etc/post_setup/packages
-	source $abs_path/usr/local/etc/post_setup/default_pack
-	source $abs_path/usr/local/etc/post_setup/minimal_pack
+#Check if there is a working internet connection.
+chk_con() {
+     #Ping google to chechk for internet. Ah yes this command, than
+     ping -c 1 google.com &> /dev/null
+         if [[ $? -eq 0 ]];
+             then
+                 success "Internet available"
+                return 0
+         else
+                 spk "$(bl)No Internet! Please connect to Wi-Fi or enable Data $(rst)"
+                 #127.0.0.1, so no internet :P
+                 err_die "127"
+         fi
 }
-#Ends.
 
 #Helper Functions.
 spk() {
@@ -58,16 +62,16 @@ clr() {
 
 #Functions helpful in Debugging.
 err_die() {
-	spk "Exiting via code $1" >> /setup/.log
+	spk "Exiting via code $1" #>> /setup/.log
 	exit "$1"
 }
 
 success() {
-	spk "$1 Succeeded!" >> /setup/.log
+	spk "$1 Succeeded!" #>> /setup/.log
 }
 
 fail() {
-	spk "$1 Failed" >> /setup/.log
+	spk "$1 Failed" #>> /setup/.log
 }
 #Ends
 
@@ -76,7 +80,7 @@ fail() {
 #########################################################
 #Check for user supplied arguements.
 args() {
-	while [[ $# -le 3 ]]; do
+	while [[ $# -le 2 ]]; do
 		case "$1" in
 			-m|--minimal)
 				_install 'minimal_pack'
@@ -93,14 +97,19 @@ args() {
 			*)
 				spk "$(bl)Unknown flag: $1$(rst)"
 				usage
-				break
 				;;
 		esac
+	  break
 	done
 }
 
 _install() {
-	
+	cd $setup_dir
+		#Read the content line by line.
+		while read pkgs; do
+			pkg install "$pkgs"
+		done < $1
+	cd $HOME
 }
 
 #Check if there is a working internet connection.
@@ -137,15 +146,15 @@ usage() {
 			spk "$(ul)TYPES $(rul)"
 			rst
 			echo "If no TYPE is defined script will first look for user defined packages list or else it will continue with DEFAULT."
-			spk "       -D, --default     Installs the packages which comes predefined                          in packages list."
-			spk "       -M, --minimal     Installs the basic packages needed to make                            Termux feel more Linux like."
-			spk "$(bl) E.g, setup -D or setup -M $(rst)"
+			spk "       -d, --default     Installs the packages which comes predefined                          in packages list."
+			spk "       -m, --minimal     Installs the basic packages needed to make                            Termux feel more Linux like."
+			spk "       -u, --user        Installs the packages defined by user in the packages list."			
+			spk "$(bl) E.g, setup -u or setup --minimal $(rst)"
 
 	spk "$(bl)$(ul)FLAGS $(rul)$(rst)"
 			echo "Flags are optional, as of now only SILENT flag is available."
 			spk "       -s, --silent      Makes the script run Silently."
-			spk "$(bl) E.g., setup -M -s or setup -M --silent $(rst)"
-	spk "That's all the help available.. for now"
+			spk "$(bl) E.g., setup -m -s or setup --minimal --silent $(rst)"
 } 
 
 #Add /usr/local/bin to $PATH
@@ -168,7 +177,6 @@ if [[ ! -d $setup_dir ]];
 		
 elif [[ -d $setup_dir ]];
 	then
-		imports	
 		chk_con
-		args
+		args "$1"
 fi
