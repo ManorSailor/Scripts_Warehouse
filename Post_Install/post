@@ -1,7 +1,7 @@
 #!/bin/bash
 #Script to quickly set-up Termux with all of packages etc after re-installation.
 #Written by Sars!
-#0.3
+#0.4
 #
 #########################################################
 #################### Vars, Helpers ######################
@@ -15,6 +15,7 @@ local_bin="$abs_path/usr/local/bin/"
 fls_dir="$abs_path/home/Awesome-Termux/Post_Install/post_setup"
 post="$abs_path/home/Awesome-Termux/Post_Install/post"
 setup_dir="$abs_path/usr/local/etc/post_setup/"
+log="$setup_dir.log"
 #Ends.
 
 #Check if there is a working internet connection.
@@ -62,17 +63,17 @@ clr() {
 
 #Functions helpful in Debugging.
 err_die() {
-	spk "Exiting via code $1" #>> /setup/.log
+	spk "Exiting via code $1"
 	exit "$1"
-}
+} >> $log
 
 success() {
-	spk "$1 Succeeded!" #>> /setup/.log
-}
+	spk "$1 Succeeded!"
+} >> $log
 
 fail() {
-	spk "$1 Failed" #>> /setup/.log
-}
+	spk "$1 Failed"
+} >> $log
 #Ends
 
 #########################################################
@@ -110,7 +111,7 @@ _install() {
 			pkg install "$pkgs"
 		done < $1
 	cd $HOME
-}
+} &>/dev/null
 
 #First run function to configure stuff.
 first_run() {
