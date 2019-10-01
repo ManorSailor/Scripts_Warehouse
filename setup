@@ -1,0 +1,64 @@
+#!/bin/bash
+#
+#Installation script for all the scripts which this repo contains.
+#Written by Sars
+#
+##################################################################
+# This script will install all our scripts in /usr/local/bin. 
+# It will also add our custom path to $PATH so that we can call them from anywhere. 
+##################################################################
+#
+##################################################################
+##################################################################
+#
+######################## Vars, Helpers ###########################
+
+#Vars
+abs_pt="/data/data/com.termux/files"
+bin="$abs_pt/usr/local/bin/"
+etc="$abs_pt/usr/local/etc/"
+post="$etc/post_setup"
+backup="$etc/.Backup_Utility"
+main_dir="$abs_pt/home/Awesome-Termux/"
+#Ends.
+
+spk() {
+	echo -e "\n$1"
+}
+
+#Do ya thing
+main() {
+	cd Backup_Script
+	cp -r .Backup_Utility $etc
+	cp backup $bin
+
+	cd $main_dir/Post_Install
+	cp -r post_setup $etc
+	cp post $bin
+
+	set_path
+	cd $HOME
+spk "All Done!"
+exit 0
+}
+
+#Add our custom path (/usr/local/) to $PATH
+set_path() {
+local bashrc="$abs_pt/usr/etc/bash.bashrc"
+	grep -q 'export PATH=$PATH'":$bin" $bashrc
+		if [[ $? -eq 1 ]]; then
+			spk 'export PATH=$PATH'":$bin" >> $bashrc
+		fi
+}
+
+if [[ ! -d $post || ! -d $backup ]];
+then
+	tput cl
+	spk "Hello, it will only take a while to install... Please bear with me.."
+	mkdir -p $bin $etc
+	main
+	
+elif [[ -d $post && -d $backup ]];
+then
+	echo "Everything is at their destined place, no need to use me now.."
+fi
