@@ -10,10 +10,6 @@
 #Vars
 #i don't want write such a long path again and again.
 abs_path=/data/data/com.termux/files
-local_etc="$abs_path/usr/local/etc/"
-local_bin="$abs_path/usr/local/bin/"
-fls_dir="$abs_path/home/Awesome-Termux/Post_Install/post_setup"
-post="$abs_path/home/Awesome-Termux/Post_Install/post"
 setup_dir="$abs_path/usr/local/etc/post_setup/"
 log="$setup_dir.log"
 #Ends.
@@ -123,16 +119,6 @@ log_chk() {
 	fi
 }
 
-#First run function to configure stuff.
-first_run() {
-	mkdir -p $local_bin $local_etc
-	cp -r $fls_dir $local_etc
-	cp $post $local_bin
-	set_path
-		sleep 3
-		spk "$(bl)All done!$(rst)"
-}
-
 #Display the help message.
 usage() {
 	bl
@@ -153,23 +139,12 @@ usage() {
 			spk "$(bl) E.g., setup -m -s or setup --minimal --silent $(rst)"
 } 
 
-#Add /usr/local/bin to $PATH
-set_path() {
-	local bashrc="$abs_path/usr/etc/bash.bashrc"
-	grep -q 'export PATH=$PATH'":$local_bin" $bashrc
-		#if last command was UNsuccessful, add the path.
-		while [[ $? -eq 1 ]]; do
-				echo -e "\nexport PATH=$PATH:$localbin" >> $bashrc
-		done
-}
-
 #Check if the script is being run for the first time.
 if [[ ! -d $setup_dir ]];
 	then
 		clr
-		spk "                                Welcome!\n Just configuring myself. Please bear with me, it can take a while :)"
+		spk "Seems like Something's wrong, Please Re-Install me via install script in the Awesome Termux Directory!"
 		chk_con
-		first_run
 		
 elif [[ -d $setup_dir ]];
 	then
