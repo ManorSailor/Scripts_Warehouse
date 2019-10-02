@@ -67,11 +67,10 @@ cst_bpt() {
 	read -p "Enter Absolute path for storing Backups: " cbpt
 	chk_dir "$cbpt"
 
-	while [[ $? -ne 0 ]]; do
+	if [[ $? -eq 1 ]]; then
 		sed -i "s%cbpt=%cbpt=~/$cbpt%" /data/data/com.termux/files/usr/local/etc/.Backup_Utility/.config #Big thanks to this user, https://serverfault.com/a/857495
 		echo -e "\nDefault Backup-Path is now: $cbpt"
-	break
-	done
+	fi
 }
 
 #Read the config file & call functions accordingly.
