@@ -5,7 +5,7 @@
 
 #GLOBAL VARIABLES
 #Import the config file containing backup path.
-source ~/.Backup_Utility/.config
+source /data/data/com.termux/files/usr/local/etc/.Backup_Utility/.config
 
 #Choices
 chc="Backup Restore List-all Custom-path Remove Quit"
@@ -68,7 +68,7 @@ cst_bpt() {
 	chk_dir "$cbpt"
 
 	while [[ $? -ne 0 ]]; do
-		sed -i "s%cbpt=%cbpt=~/$cbpt%" .Backup_Utility/.config #Big thanks to this user, https://serverfault.com/a/857495
+		sed -i "s%cbpt=%cbpt=~/$cbpt%" /data/data/com.termux/files/usr/local/etc/.Backup_Utility/.config #Big thanks to this user, https://serverfault.com/a/857495
 		echo -e "\nDefault Backup-Path is now: $cbpt"
 	break
 	done
@@ -203,9 +203,9 @@ tar_bup() {
 #Fix tar cannot create symlink error, cause android's storage filesystem format doesnt support moving/copying symlinks
 fix_rest() {
 	cd "$1"
-	cp "$2" "$HOME" 2>/dev/null
+	cp "$2" "$HOME" 
 	cd "$HOME"
-}
+} 2>/dev/null
 
 #Funtcion for Restoring.
 tar_rest() {
