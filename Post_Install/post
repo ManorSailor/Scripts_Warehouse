@@ -111,11 +111,11 @@ _install() {
 
 #Update log on every startup.
 log_chk() {
-	if [[ -f $log ]];
+	if [[ -f $1 ]];
 		then
-			rm .log
+			rm $1
 	else
-		touch .log
+		touch $1
 	fi
 }
 
@@ -149,6 +149,6 @@ if [[ ! -d $setup_dir ]];
 elif [[ -d $setup_dir ]];
 	then
 		chk_con
-		log_chk
+		log_chk $log
 		args "$1"
 fi
