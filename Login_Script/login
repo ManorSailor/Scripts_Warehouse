@@ -4,9 +4,9 @@
 #Version: 1.0
 
 #Path where the valuables are stored.
-pt=../usr/share/.login
+pt=/data/data/com.termux/files/usr/local/share/.login
 #Path for temporarily storing unencrypted valuables.
-opt=../usr/tmp/.tmplog
+opt=/data/data/com.termux/files/usr/tmp/.tmplog
 
 #Tput Beautify Starts.
 clr() {
