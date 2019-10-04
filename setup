@@ -20,6 +20,7 @@ etc="$abs_pt/usr/local/etc/"
 share="$abs_pt/usr/local/share/"
 post="$etc/post_setup"
 backup="$etc/.Backup_Utility"
+login="$bin/login"
 main_dir="$abs_pt/home/Awesome-Termux/"
 #Ends.
 
@@ -55,14 +56,14 @@ local bashrc="$abs_pt/usr/etc/bash.bashrc"
 		fi
 }
 
-if [[ ! -d $post || ! -d $backup ]];
+if [[ ! -d $post || ! -d $backup || ! -f $login ]];
 then
 	tput cl
 	spk "Hello, it will only take a while to install... Please bear with me.."
 	mkdir -p $bin $etc $share
 	main
 	
-elif [[ -d $post && -d $backup ]];
+elif [[ -d $post && -d $backup && -f $login ]];
 then
 	echo "Everything is at their destined place, no need to use me now.."
 fi
