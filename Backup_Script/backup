@@ -170,7 +170,7 @@ st_nm() {
 
 #Choose Backup-Type.
 bup_type() {
-	echo -e "\nFull Backup: Backs-Up Both entire root directory"
+	echo -e "\nFull Backup: Backs-Up entire root directory"
 	echo -e "\nHalf Backup: Backs-Up /usr/etc & /home only."
 	echo	
 	read -p "Full or Half: " ans
