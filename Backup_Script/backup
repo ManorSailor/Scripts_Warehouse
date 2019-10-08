@@ -155,9 +155,28 @@ rm_file() {
 	fi		
 }
 
+<<<<<<< HEAD
 #Choose Backup-Type.
 bup_type() {
 	echo -e "\nFull Backup: Backs-Up Both entire root directory"
+=======
+#Fucntion to set backup file name.
+st_nm() {
+	read -p "Enter the Name for backup file: " nm
+
+	if [[ -n "$nm" ]];
+		then
+			echo -e "\nName has been set!"
+	else
+			echo -e "\nUsing default name for backup file"
+			nm="$1"
+	fi
+}
+
+#Choose Backup-Type.
+bup_type() {
+	echo -e "\nFull Backup: Backs-Up entire root directory"
+>>>>>>> 69be0a75517f762875bd54b7069cbc61a26af0dd
 	echo -e "\nHalf Backup: Backs-Up /usr/etc & /home only."
 	echo	
 	read -p "Full or Half: " ans
@@ -165,12 +184,22 @@ bup_type() {
 	if [[ "$ans" == "Full" && ! -z "$ans" ]];
 		then
 			echo -e "\nInitiating Full Backup..."
+<<<<<<< HEAD
 			tar_bup "$1" "$fbup" "root_$(date --i)"
+=======
+			st_nm "root"
+			tar_bup "$1" "$fbup"
+>>>>>>> 69be0a75517f762875bd54b7069cbc61a26af0dd
 
 	elif [[ "$ans" == "Half" && ! -z "$ans" ]];
 		then
 			echo -e "\nInitiating Half Backup..."
+<<<<<<< HEAD
 			tar_bup "$1" "$hbup" "usr_$(date --i)"
+=======
+			st_nm "usr"
+			tar_bup "$1" "$hbup"
+>>>>>>> 69be0a75517f762875bd54b7069cbc61a26af0dd
 
 	else
 			show_menu
@@ -180,9 +209,14 @@ bup_type() {
 #Function for Backing-Up.
 tar_bup() {
 	mkdir -p "$1"
+<<<<<<< HEAD
 #	st_nm
 	tar -czpf "$3" $2 2>/dev/null
 	mv "$3" "$1"
+=======
+	tar -czpf "$nm" $2 2>/dev/null
+	mv "$nm" "$1"
+>>>>>>> 69be0a75517f762875bd54b7069cbc61a26af0dd
 	echo -e "Configs Backed-Up at \n$1"
 }
 
