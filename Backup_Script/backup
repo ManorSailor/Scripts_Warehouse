@@ -180,7 +180,6 @@ bup_type() {
 #Function for Backing-Up.
 tar_bup() {
 	mkdir -p "$1"
-#	st_nm
 	tar -czpf "$3" $2 2>/dev/null
 	mv "$3" "$1"
 	echo -e "Configs Backed-Up at \n$1"
@@ -246,7 +245,7 @@ case $opt in
 		;;
             
 	*) 
-		echo invalid option
+		echo "Invalid Option"
 		echo
 		;;
 	esac
