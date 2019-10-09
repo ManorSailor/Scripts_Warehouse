@@ -1,7 +1,7 @@
 #! /bin/bash
 #Script for Backing-Up and restoring Termux environment.
 #Written by Sars!
-#0.8
+#0.9
 
 #GLOBAL VARIABLES
 #Import the config file containing backup path.
