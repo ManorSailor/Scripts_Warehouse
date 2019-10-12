@@ -104,7 +104,7 @@ _install() {
 	cd $setup_dir
 		#Read the content line by line.
 		while read pkgs; do
-			pkg install "$pkgs"
+			pkg install -y "$pkgs"
 		done < $1
 	cd $HOME
 } &>/dev/null
