@@ -136,7 +136,7 @@ rm_file() {
 	read -p "Enter Filename: " flnm
 	chk_file "$flnm"
 	echo
-	read -p "Are you sure you want to remove $flnm?: " ans
+	read -p "Are you sure you want to remove $flnm?[y/n]: " ans
 
 	if [[ "$ans" == "Yes" || "$ans" == "Y" || "$ans" == "y" || "$ans" == "yes" ]];
 		then
