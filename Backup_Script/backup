@@ -146,12 +146,12 @@ rm_file() {
 
 	elif [[ -z "$ans" ]];
 		then
-			echo -e "\nEmpty string! Aborting..."
-			exit
+			echo -e "\nEmpty string! Retry!"
+			read_cfg 'Remove'
 
 	else
 		echo -e "\nAborting.."
-		exit
+		show_menu
 	fi		
 }
 
