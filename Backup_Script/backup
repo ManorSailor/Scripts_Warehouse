@@ -57,7 +57,7 @@ chk_dir() {
 
 	else
 			echo -e "\nUnknown Input $1"
-			exit
+			show_menu
 	fi
 }
 
@@ -150,8 +150,8 @@ rm_file() {
 			read_cfg 'Remove'
 
 	else
-		echo -e "\nAborting.."
-		show_menu
+			echo -e "\nAborting.."
+			show_menu
 	fi		
 }
 
