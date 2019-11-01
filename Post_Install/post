@@ -55,6 +55,10 @@ rst() {
 clr() {
 	tput clear
 }
+
+colr() {
+	tput setaf $1
+}
 #Ends.
 
 #Functions helpful in Debugging.
@@ -104,18 +108,19 @@ _install() {
 	cd $setup_dir
 		#Read the content line by line.
 		while read pkgs; do
-			pkg install -y "$pkgs"
+			echo "$pkgs"
+			pkg install -y "$pkgs" &>/dev/null
 		done < $1
 	cd $HOME
-} &>/dev/null
+}
 
-#Update log on every startup.
+#Refresh log file on every startup.
 log_chk() {
-	if [[ -f $1 ]];
-		then
-			rm $1
+	if [[ -f $log ]];
+	then
+		rm $log
 	else
-		touch $1
+		touch $log
 	fi
 }
 
@@ -125,12 +130,12 @@ usage() {
 	echo "$(ul)SYNTAX $(rul)"
 	echo "       setup {TYPE}... {FLAG}"
 
-			spk "$(ul)TYPES $(rul)"
+	spk "$(ul)TYPES $(rul)"
 			rst
 			echo "If no TYPE is defined script will first look for user defined packages list or else it will continue with DEFAULT."
 			spk "       -d, --default     Installs the packages which comes predefined                          in packages list."
 			spk "       -m, --minimal     Installs the basic packages needed to make                            Termux feel more Linux like."
-			spk "       -u, --user        Installs the packages defined by user in the packages list."			
+			spk "       -u, --user        Installs the packages defined by user in the                          packages list."			
 			spk "$(bl) E.g, setup -u or setup --minimal $(rst)"
 
 	spk "$(bl)$(ul)FLAGS $(rul)$(rst)"
@@ -144,11 +149,11 @@ if [[ ! -d $setup_dir ]];
 	then
 		clr
 		spk "Seems like Something's wrong, Please Re-Install me via install script in the Awesome Termux Directory!"
-		chk_con
+		exit 1
 		
 elif [[ -d $setup_dir ]];
 	then
 		chk_con
-		log_chk $log
+		log_chk
 		args "$1"
 fi
