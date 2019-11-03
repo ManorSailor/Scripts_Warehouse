@@ -6,4 +6,8 @@ It can be used as a basic terminal or can be turned into a full blown linux envi
 
 This repo is going to hold all the scripts which are going to modify the behaviour of termux to reap some greater functionality i.e., not provided by default.
 
+Dependencies:
+Tput
+ncurses-util
+
 **Readme will be updated as the need arises**
