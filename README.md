@@ -17,7 +17,7 @@ Care to Star it? :)
 First, one notable thing to keep in mind is that, all of these scripts are/were (being) written on [Termux](https://play.google.com/store/apps/details?id=com.termux).
 So they will **NOT** work on any Linux distribution due to different directory structure.
 
-Please have look [Here](https://wiki.termux.com/wiki/Differences_from_Linux)
+Please have a look [Here](https://wiki.termux.com/wiki/Differences_from_Linux)
 
 So, these scripts will work just fine on Termux.
 
@@ -35,9 +35,11 @@ So, these scripts will work just fine on Termux.
 
 ## Installing <a name = "install"></a>
 
-Just execute the setup script in the root directory of the repo. It will take care of everything.
+First, Clone the repo and then execute the setup script in the root directory of the repo. It will take care of everything.
+
+In the future, this may change.
 
 ## Credits <a name = "creds"></a>
 
-* [The Documentation Compendium](https://github.com/kylelobo/The-Documentation-Compendium) For this readme template.
+* [The Documentation Compendium](https://github.com/kylelobo/The-Documentation-Compendium) Readme template.
 * [Greg's Bash Guide](http://mywiki.wooledge.org/BashGuide)
