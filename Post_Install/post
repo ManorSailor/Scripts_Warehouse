@@ -51,10 +51,6 @@ clr() {
 	tput clear
 }
 
-cup() {
-	tput cup $1 $2
-}
-
 colr() {
 	tput setaf $1
 }
@@ -107,21 +103,11 @@ _install() {
 	cd $setup_dir
 		#Read the content line by line.
 		while read pkgs; do
+			echo "$pkgs"
 			pkg install -y "$pkgs"
 		done < $1
 	cd $HOME
-} &>/dev/null
-
-#Get the number of coloumns present on the screen.
-#Different styles affects it, so the content may not always be there where it should be.
-size() {
-local col=$(tput cols)
-local sum=$(( $col - 3 ))
 }
-
-#right() {
-	
-#}
 
 #Refresh log file on every startup.
 log_chk() {
