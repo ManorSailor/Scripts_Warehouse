@@ -16,17 +16,12 @@ log="$setup_dir.log"
 
 #Check if there is a working internet connection.
 chk_con() {
-     #Ping google to chechk for internet. Ah yes this command, than
-     ping -c 1 google.com &> /dev/null
-         if [[ $? -eq 0 ]];
-             then
-                 success "Internet available"
-                return 0
-         else
-                 spk "$(bl)No Internet! Please connect to Wi-Fi or enable Data $(rst)"
-                 #127.0.0.1, so no internet :P
-                 err_die "127"
-         fi
+    #Ping google to chechk for internet. Ah yes this command, than
+    ping -c 1 google.com &>/dev/null
+    if [[ $? -ne 0 ]] ; then
+	    echo "Make sure you have a working Internet connection."
+		err_die "127"
+	fi
 }
 
 #Helper Functions.
@@ -54,6 +49,10 @@ rst() {
 
 clr() {
 	tput clear
+}
+
+cup() {
+	tput cup $1 $2
 }
 
 colr() {
@@ -108,11 +107,21 @@ _install() {
 	cd $setup_dir
 		#Read the content line by line.
 		while read pkgs; do
-			echo "$pkgs"
-			pkg install -y "$pkgs" &>/dev/null
+			pkg install -y "$pkgs"
 		done < $1
 	cd $HOME
+} &>/dev/null
+
+#Get the number of coloumns present on the screen.
+#Different styles affects it, so the content may not always be there where it should be.
+size() {
+local col=$(tput cols)
+local sum=$(( $col - 3 ))
 }
+
+#right() {
+	
+#}
 
 #Refresh log file on every startup.
 log_chk() {
