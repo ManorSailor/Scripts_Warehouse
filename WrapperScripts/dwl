@@ -1,0 +1,97 @@
+#!/bin/bash
+#Simple wrapper/frontend tool for wget/curl.
+##################################################
+#---------------------NOTES----------------------#
+#Dependencies: tput, ncurses-util, curl or wget.
+#Frontend tool for hassle free downloading via curl/wget.
+
+#Enable lastpipe option to avoid value loss from vars.
+#Hence, in bash the paet of pipes is ran in a subshell. It's value get lost when you that subshell is destroyed.
+shopt -s lastpipe
+
+#Script name{{{
+readonly _name_="${0}"
+#}}}
+
+#Tput-ify{{{
+reset=$(tput sgr0) #Reset-ify
+bold=$(tput bold) #Bold-ify
+cyan=$(tput setaf 6) #Cyan-ify
+green=$(tput setaf 2) #Green-ify, no copyright. just no.
+red=$(tput setaf 9) #Red-ify
+#}}}
+
+#Check if either curl or wget is present{{{
+[[ "$(command -v wget)" || "$(command -v curl)" ]] || echo "$(bold)$(cyan)This tool requires either curl or wget to be installed.$(reset)"
+#}}}
+
+#Init error/info functions{{{
+err_msg() { printf "\n$1"; }
+#
+err_die() { printf "\n$1"; exit "$2"; }
+#
+msg() { printf "\n$1"; }
+#}}}
+
+#Check Internet{{{
+conc() {
+	ping -c 1 google.com &>/dev/null
+		if [[ $? -ne 0 ]]; then
+			echo "Make sure you have a working internet connection."
+			err_die "127"
+		fi
+}
+#}}}
+
+#Initialize variables, and stuff{{{
+init() {
+#Vars{{{
+	abs="/data/data/com.termux/files" #Absolute path.
+	DDIR="$HOME/Stuff/" #Default download directory.
+#}}}
+
+#Arrays{{{
+	child_dirs="Archives Docs Music Videos Images Others" #Directories to store specific file types.
+#}}}
+}
+#}}}
+
+#Create proper directories for different file types{{{
+mkdirs() {
+[[ ! -d $DDIR ]] && mkdir $DDIR; cd "$DDIR" #Create Parent directory
+	for childs in ${child_dirs[@]}; do
+		[[ ! -d "$childs" ]] && mkdir "$childs"
+	done
+cd $HOME
+}
+#}}}
+
+#Parse arguements supplied{{{
+#args() {
+#	while [[ $# -gt 0 ]]; do
+#		case "$1" in
+#			-b|--background)
+
+#				;;
+#	done
+#}
+#}}}
+
+#Detect the file-type downloaded{{{
+detect_filetype() {
+[[ "$(command -v file)" ]] || echo "${bold}file command missing.${reset}"
+file -b "$1" | grep -Eo '^[^ ]+' | cat | read type #Currently bugged.
+	case "$type" in
+		Bourne-Agan)
+			echo "Bash file"
+			;;
+		*)
+			echo "Dunno"
+			;;
+	esac
+}
+#}}}
+init
+mkdirs
+#conc
+detect_filetype
