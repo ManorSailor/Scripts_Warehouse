@@ -21,8 +21,9 @@ green=$(tput setaf 2) #Green-ify, no copyright. just no.
 red=$(tput setaf 9) #Red-ify
 #}}}
 
-#Check if either curl or wget is present{{{
-[[ "$(command -v wget)" || "$(command -v curl)" ]] || echo "$(bold)$(cyan)This tool requires either curl or wget to be installed.$(reset)"
+#Check presence of needed programs{{{
+[[ "$(command -v wget)" || "$(command -v curl)" ]] || { echo "$(bold)$(cyan)This tool requires either curl or wget to be installed.$(reset)"; exit 1; }
+[[ "$(command -v file)" ]] || { echo "${bold}file program missing.${reset}"; exit 1; }
 #}}}
 
 #Init error/info functions{{{
@@ -79,11 +80,14 @@ cd $HOME
 
 #Detect the file-type downloaded{{{
 detect_filetype() {
-[[ "$(command -v file)" ]] || echo "${bold}file command missing.${reset}"
-file -b "$1" | grep -Eo '^[^ ]+' | cat | read type #Currently bugged.
-	case "$type" in
-		Bourne-Agan)
+[[ -r "$1" ]] || { echo "$1 ${bold}does not exist or incorrect permission${reset}"; exit 1; }
+file -b "$1" | grep -Eo '^[^ ]+' | cat | read filetype
+	case "$filetype" in
+		Bourne-Again)
 			echo "Bash file"
+			;;
+		PNG)
+			echo "PNG file"
 			;;
 		*)
 			echo "Dunno"
@@ -94,4 +98,4 @@ file -b "$1" | grep -Eo '^[^ ]+' | cat | read type #Currently bugged.
 init
 mkdirs
 #conc
-detect_filetype
+detect_filetype "$1"
