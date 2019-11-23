@@ -44,6 +44,23 @@ conc() {
 }
 #}}}
 
+#Help msg{{{
+hlp() {
+cat<<EOF 
+${bold}NAME:${reset}
+	Simple Wrapper tool for wget/curl.
+${bold}USAGE:${reset}
+	$_name_ [URL] [args]
+	${bold}dl https://google/joker.jpg -sbBr
+${bold}OPTIONS:${reset}
+	-b, --background - Makes the script runs in Background.
+	-B, --backup - Backsup original copy of downloaded file.
+	-r, --replace - Replaces file if it exists.
+	-m, --multi - Can download multiple files at a time.
+EOF
+}
+#}}}
+
 #Initialize variables, and stuff{{{
 init() {
 #Vars{{{
@@ -78,7 +95,7 @@ cd $HOME
 #}
 #}}}
 
-#Detect the file-type downloaded{{{
+#Detect the file-type{{{
 detect_filetype() {
 [[ -r "$1" ]] || { echo "$1 ${bold}does not exist or incorrect permission${reset}"; exit 1; }
 file -b "$1" | grep -Eo '^[^ ]+' | cat | read filetype
@@ -89,12 +106,16 @@ file -b "$1" | grep -Eo '^[^ ]+' | cat | read filetype
 		PNG)
 			echo "PNG file"
 			;;
+		JPEG)
+			echo "JPG file"
+			;;
 		*)
 			echo "Dunno"
 			;;
 	esac
 }
 #}}}
+hlp
 init
 mkdirs
 #conc
