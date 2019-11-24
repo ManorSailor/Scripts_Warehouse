@@ -50,13 +50,15 @@ cat<<EOF
 ${bold}NAME:${reset}
 	Simple Wrapper tool for wget/curl.
 ${bold}USAGE:${reset}
-	$_name_ [URL] [args]
+	$_name_ [args] [URL OR File path]
 	${bold}dl https://google/joker.jpg -sbBr
 ${bold}OPTIONS:${reset}
 	-b, --background - Makes the script runs in Background.
 	-B, --backup - Backsup original copy of downloaded file.
 	-r, --replace - Replaces file if it exists.
-	-m, --multi - Can download multiple files at a time.
+	-m, --multi - Can handle multiple URLs at a time.
+	-f, --file - Provide absolute path to file containing urls.
+	-h, --help - Display a msg displaying various commands.
 EOF
 }
 #}}}
@@ -85,14 +87,34 @@ cd $HOME
 #}}}
 
 #Parse arguements supplied{{{
-#args() {
-#	while [[ $# -gt 0 ]]; do
-#		case "$1" in
-#			-b|--background)
-
-#				;;
-#	done
-#}
+args() {
+	while [[ $# -gt 0 ]]; do
+		case "$1" in
+			-b|--background)
+				echo "Background functionality working fine"
+				;;
+			-B|--backup)
+				echo "Backup here"
+				;;
+			-r|--replace)
+				echo "Replace here"
+				;;
+			-m|--multi)
+				echo "Multiple downloader here"
+				;;
+			-f|--file)
+				echo "File here"
+				;;
+			-h|--help)
+				hlp
+				;;
+			*)
+				echo "Needs at least an url or file containing urls. Type $_name_ -h for help"
+				;;
+		esac
+	  break
+	done
+}
 #}}}
 
 #Detect the file-type{{{
@@ -115,8 +137,18 @@ file -b "$1" | grep -Eo '^[^ ]+' | cat | read filetype
 	esac
 }
 #}}}
-hlp
+
+#Read urls from file{{{
+reader() {
+[[ -r "$1" ]] || { echo "$1 ${bold}does not exist or incorrect permission${reset}"; exit 1; }
+	while read urls; do
+		echo "$urls"
+	done < "$1"
+}
+#}}}
 init
 mkdirs
 #conc
-detect_filetype "$1"
+args "$1"
+detect_filetype "$2"
+#reader "$2"
