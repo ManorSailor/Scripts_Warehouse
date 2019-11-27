@@ -6,7 +6,7 @@
 #Frontend tool for hassle free downloading via curl/wget.
 
 #Enable lastpipe option to avoid value loss from vars.
-#Hence, in bash the paet of pipes is ran in a subshell. It's value get lost when you that subshell is destroyed.
+#Cause, in bash the part of pipes is ran in a subshell. It's value get lost when that subshell is destroyed.
 shopt -s lastpipe
 
 #Script name{{{
@@ -32,6 +32,15 @@ err_msg() { printf "\n$1"; }
 err_die() { printf "\n$1"; exit "$2"; }
 #
 msg() { printf "\n$1"; }
+#}}}
+
+#Call functions{{{
+_call_funcs() {
+	conc
+	init
+	mkdirs
+	args "$1"
+}
 #}}}
 
 #Check Internet{{{
@@ -146,9 +155,4 @@ reader() {
 	done < "$1"
 }
 #}}}
-init
-mkdirs
-#conc
-args "$1"
-detect_filetype "$2"
-#reader "$2"
+_call_funcs "$1"
