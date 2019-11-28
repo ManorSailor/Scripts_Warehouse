@@ -29,7 +29,7 @@ red=$(tput setaf 9) #Red-ify
 #Init error/info functions{{{
 err_msg() { printf "\n$1"; }
 #
-err_die() { printf "\n$1"; exit "$2"; }
+err_die() { printf "\n$1"; exit; }
 #
 msg() { printf "\n$1"; }
 #}}}
@@ -39,7 +39,7 @@ _call_funcs() {
 	conc
 	init
 	mkdirs
-	args "$1"
+	args "$1" "$2"
 }
 #}}}
 
@@ -60,13 +60,12 @@ ${bold}NAME:${reset}
 	Simple Wrapper tool for wget/curl.
 ${bold}USAGE:${reset}
 	$_name_ [args] [URL OR File path]
-	${bold}dl https://google/joker.jpg -sbBr
+	${bold}$_name_ -b https://google/joker.jpg
 ${bold}OPTIONS:${reset}
 	-b, --background - Makes the script runs in Background.
 	-B, --backup - Backsup original copy of downloaded file.
 	-r, --replace - Replaces file if it exists.
-	-m, --multi - Can handle multiple URLs at a time.
-	-f, --file - Provide absolute path to file containing urls.
+	-f, --file - Provide absolute path to file containing urls
 	-h, --help - Display a msg displaying various commands.
 EOF
 }
@@ -100,19 +99,16 @@ args() {
 	while [[ $# -gt 0 ]]; do
 		case "$1" in
 			-b|--background)
-				echo "Background functionality working fine"
+				down $1 $2
 				;;
 			-B|--backup)
-				echo "Backup here"
+#				down "--backup=backups" $2
 				;;
 			-r|--replace)
-				echo "Replace here"
-				;;
-			-m|--multi)
-				echo "Multiple downloader here"
+				down "-nc" $2
 				;;
 			-f|--file)
-				echo "File here"
+				reader "-bq" $2
 				;;
 			-h|--help)
 				hlp
@@ -149,10 +145,16 @@ file -b "$1" | grep -Eo '^[^ ]+' | cat | read filetype
 
 #Read urls from file{{{
 reader() {
-[[ -r "$1" ]] || { echo "$1 ${bold}does not exist or incorrect permission${reset}"; exit 1; }
+[[ -r "$2" ]] || { echo "$1 ${bold}does not exist or incorrect permission${reset}"; exit 1; }
 	while read urls; do
-		echo "$urls"
-	done < "$1"
+		down $1 "$urls"
+	done < "$2"
 }
 #}}}
-_call_funcs "$1"
+
+#Downloader{{{
+down() {
+	wget $1 $2
+}
+#}}}
+_call_funcs "$@"
