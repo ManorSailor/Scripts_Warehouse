@@ -1,0 +1,18 @@
+#!/bin/bash
+#Telegram media cleaner.
+#Written by Sars.
+#To-Do: Finding a proper usage for this script.
+#
+#Variables and constants.
+tg_dir="storage/shared/Telegram/"
+sub_dirs=('Telegram Audio' 'Telegram Documents' 'Telegram Video' 'Telegram Images')
+
+#main{{{
+main() {
+cd "$tg_dir"
+	for fls in "${sub_dirs[@]}"; do
+		rm -rf "$fls"/*
+	done
+}
+#}}}
+main
