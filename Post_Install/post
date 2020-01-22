@@ -30,32 +30,6 @@ spk() {
 }
 #Ends.
 
-#Tput-ify
-bl() {
-	tput bold
-}
-
-ul() {
-	tput smul
-}
-
-rul() {
-	tput rmul
-}
-
-rst() {
-	tput sgr0
-}
-
-clr() {
-	tput clear
-}
-
-colr() {
-	tput setaf $1
-}
-#Ends.
-
 #Functions helpful in Debugging.
 err_die() {
 	spk "Exiting via code $1"
@@ -103,7 +77,6 @@ _install() {
 	cd $setup_dir
 		#Read the content line by line.
 		while read pkgs; do
-			echo "$pkgs"
 			pkg install -y "$pkgs"
 		done < $1
 	cd $HOME
@@ -121,28 +94,26 @@ log_chk() {
 
 #Display the help message.
 usage() {
-	bl
-	echo "$(ul)SYNTAX $(rul)"
+	echo "SYNTAX "
 	echo "       setup {TYPE}... {FLAG}"
 
-	spk "$(ul)TYPES $(rul)"
-			rst
+	spk "TYPES "
 			echo "If no TYPE is defined script will first look for user defined packages list or else it will continue with DEFAULT."
-			spk "       -d, --default     Installs the packages which comes predefined                          in packages list."
-			spk "       -m, --minimal     Installs the basic packages needed to make                            Termux feel more Linux like."
-			spk "       -u, --user        Installs the packages defined by user in the                          packages list."			
-			spk "$(bl) E.g, setup -u or setup --minimal $(rst)"
+			spk "       -d, --default  Installs the packages which comes predefined                      in packages list."
+			spk "       -m, --minimal  Installs the basic packages needed to make                        Termux feel more Linux like."
+			spk "       -u, --user     Installs the packages defined by user in the                      packages list."			
+			spk "E.g, setup -u or setup --minimal"
 
-	spk "$(bl)$(ul)FLAGS $(rul)$(rst)"
+	spk "FLAGS "
 			echo "Flags are optional, as of now only SILENT flag is available."
 			spk "       -s, --silent      Makes the script run Silently."
-			spk "$(bl) E.g., setup -m -s or setup --minimal --silent $(rst)"
+			spk " E.g., setup -m -s or setup --minimal --silent "
 } 
 
 #Check if the script is being run for the first time.
 if [[ ! -d $setup_dir ]];
 	then
-		clr
+		clear
 		spk "Seems like Something's wrong, Please Re-Install me via install script in the Awesome Termux Directory!"
 		exit 1
 		
