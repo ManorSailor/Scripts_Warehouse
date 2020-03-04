@@ -65,7 +65,7 @@ args() {
 				_install 'packages'
 				;;
 			*)
-				spk "$(bl)Unknown flag: $1$(rst)"
+				spk "Unknown flag: $1"
 				usage
 				;;
 		esac
