@@ -1,0 +1,43 @@
+#!/bin/bash
+#Telegram & Whatsapp media cleaner.
+#Written by Sars.
+#
+#Fire_it_up!{{{
+run() {
+	if [[ "$1" == "wa" || "$1" == "WA" ]]; then
+		wa_cl
+	elif [[ "$1" == "tg" || "$1" == "TG" ]]; then
+		tg_cl
+	else
+		wa_cl
+	fi
+}
+#}}}
+
+#Telegram_cleaner{{{
+tg_cl() {
+local fls
+local tg_dir="storage/shared/Telegram/"
+local sub_dirs=('Telegram Audio' 'Telegram Documents' 'Telegram Video' 'Telegram Images')
+cd "$tg_dir"
+	for fls in "${sub_dirs[@]}"; do
+		rm -rf "$fls"/*
+	done
+echo "Telegram dir. cleaned!"
+}
+#}}}
+
+#Whatsapp_cleaner{{{
+wa_cl() {
+local fls
+local wa_dir="storage/shared/WhatsApp/Media/"
+local sub_dirs=("WallPaper" "WhatsApp Animated Gifs/Private" "WhatsApp Animated Gifs/Sent" "WhatsApp Audio/Private" "WhatsApp Audio/Sent" "WhatsApp Documents/Private" "WhatsApp Documents/Sent" "WhatsApp Images/Private" "WhatsApp Images/Sent" "WhatsApp Profile Photos" "WhatsApp Stickers" "WhatsApp Video/Private" "WhatsApp Video/Sent" "WhatsApp Voice Notes/202015" "WhatsApp Voice Notes/202016")
+cd "$wa_dir"
+	for fls in "${sub_dirs[@]}"; do
+		rm -rf "$fls"/*
+	done
+echo "WhatsApp dir. cleaned!"
+}	
+#}}}
+
+run "$@"
