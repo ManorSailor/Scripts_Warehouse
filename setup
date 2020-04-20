@@ -21,7 +21,7 @@ share="$abs_pt/usr/local/share/"
 post="$etc/post_setup"
 backup="$etc/.Backup_Utility"
 login="$bin/login"
-main_dir="$abs_pt/home/Awesome-Termux/"
+main_dir="$abs_pt/home/Scripts_Warehouse/"
 #Ends.
 
 spk() {
@@ -58,7 +58,7 @@ local bashrc="$abs_pt/usr/etc/bash.bashrc"
 
 if [[ ! -d $post || ! -d $backup || ! -f $login ]];
 then
-	tput cl
+	clear
 	spk "Hello, it will only take a while to install... Please bear with me.."
 	mkdir -p $bin $etc $share
 	main
