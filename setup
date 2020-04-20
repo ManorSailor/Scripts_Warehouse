@@ -39,7 +39,7 @@ main() {
 	cp post $bin
 
 	cd $main_dir/Login_Script
-	cp login $bin
+	cp signin $bin
 
 	set_path
 	cd $HOME
