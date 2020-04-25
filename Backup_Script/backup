@@ -3,35 +3,21 @@
 #Written by Sars!
 #0.9
 
-#GLOBAL VARIABLES
-#Import the config file containing backup path.
-source /data/data/com.termux/files/usr/local/etc/.Backup_Utility/.config
+#GLOBAL_VARS
+fbup="../"
+hbup="../etc ../home"
+dbpt="$HOME/storage/shared/TermuxBackups/"
+chc="Backup Restore List-all Remove Quit"
+PS3="> "
 
-#Choices
-chc="Backup Restore List-all Custom-path Remove Quit"
-PS3="Choose: "
+#Wrapper()
+lst() { ls -lh "$1"; } 2>/dev/null
+rmr() { rm -r "$1" "$2"; } 2>/dev/null
+mkd() { mkdir "$1" "$2"; } 2>/dev/null
+mov() { mv "$1" "$2"; } 2>/dev/null
 
-#######################################
-#Wrapper/Helper functions STARTS.
-#######################################
-ls() {
-	command ls -lh "$1" 2>/dev/null
-}
-
-rm() {
-	command rm -r "$1" "$2" 2>/dev/null
-}
-
-mkdir() {
-	command mkdir "$1" "$2" 2>/dev/null
-}
-
-mv() {
-	command mv "$1" "$2" 2>/dev/null
-}
-######################################
-#Wrapper/Helper functions ENDS.
-######################################
+#Create_directory
+[[ ! -d "$dbpt" ]] && mkd -p "$dbpt"
 
 #Show the menu
 #Allow the functions to be called defined below. Hackish way, thanks stackoverflow :P
@@ -42,135 +28,45 @@ show_menu() {
 	done
 }
 
-#Check if Directory exists.
-chk_dir() {
-	if [[ -d "$1" && -n "$1" ]];
-		then
-			echo -e "\nDirectory Exists!"
-			bup_type "$1"
-
-	elif [[ ! -d "$1" && -n "$1" ]];
-		then
-			mkdir "$1"
-			echo -e "\nDirectory Created!!"
-			return 1
-
-	else
-			echo -e "\nUnknown Input $1"
-			show_menu
-	fi
-}
-
-#Function to set user defined custom backup paths.
-cst_bpt() {
-	echo
-	read -p "Enter Absolute path for storing Backups: " cbpt
-	chk_dir "$cbpt"
-
-	if [[ $? -eq 1 ]]; then
-		sed -i "s%cbpt=%cbpt=~/$cbpt%" /data/data/com.termux/files/usr/local/etc/.Backup_Utility/.config #Big thanks to this user, https://serverfault.com/a/857495
-		echo -e "\nDefault Backup-Path is now: $cbpt"
-	fi
-}
-
-#Read the config file & call functions accordingly.
-read_cfg() {
-	if [[ -z "$cbpt" && "$1" == 'Backup' ]];
- 		then
-        	bup_type "$dbpt"
-
-	elif [[ -z "$cbpt" && "$1" == 'Restore' ]];
-    	then
-        	tar_rest "$dbpt"
-
-	elif [[ -n "$cbpt" && "$1" == 'Backup' ]];
-    	then
-        	bup_type "$cbpt"
-
- 	elif [[ -n "$cbpt" && "$1" == 'Restore' ]];
-    	then
-        	tar_rest "$cbpt"
-
-    elif [[ -z "$cbpt" && "$1" == 'List-all' ]];
-    	then
-    		ls "$dbpt"
-
-    elif [[ -n "$cbpt" && "$1" == 'List-all' ]];
-    	then
-    		ls "$cbpt"
-
-    elif [[ -z "$cbpt" && "$1" == 'Remove' ]];
-    	then
-    		rm_file "$dbpt"
-
-    elif [[ -n "$cbpt" && "$1" == 'Remove' ]];
-    	then
-    		rm_file "$cbpt"
-    fi
-}
-
 #Check if file exists.
 chk_file() {
- 	if [[ -f "$1" ]];
- 	    then
- 	        return 0
- 	        
-	elif [[ -z "$1" ]];
-		then
-			echo -e "\nPlease Enter Filename!"
-			exit
-
+ 	if [[ ! -z "$1" && -f "$1" ]]; then
+ 		return
  	else
-  	        echo -e "\n$flnm File not found!"
-            exit
+ 		echo -e "\n$flnm File not found!"; exit 1;
 	fi
 }
 
-#Function for removing Backup files.
+#Function for removing files.
 rm_file() {
 	cd "$1"
-	echo -e "\nHere is the list of all your Backups:"
-	ls "$1"
-	echo
-	
+	echo "Here is a list of all your Backups:"
+	lst "$1"; echo
 	read -p "Enter Filename: " flnm
 	chk_file "$flnm"
-	echo
 	read -p "Are you sure you want to remove $flnm?[y/n]: " ans
 
-	if [[ "$ans" == "Yes" || "$ans" == "Y" || "$ans" == "y" || "$ans" == "yes" ]];
-		then
-			rm "$flnm"
-			echo -e "\nRemoved!"
-			return 0
-
-	elif [[ -z "$ans" ]];
-		then
-			echo -e "\nEmpty string! Retry!"
-			read_cfg 'Remove'
-
+	if [[ ! -z "$ans" && "$ans" =~ ^[Y|y] ]]; then
+		rmr "$flnm"
+		echo -e "\nRemoved!"
 	else
-			echo -e "\nAborting.."
-			show_menu
+		echo -e "\nAborting.."; show_menu;
 	fi		
 }
 
 #Choose Backup-Type.
 bup_type() {
-	echo -e "\nFull Backup: Backs-Up Both entire root directory"
-	echo -e "\nHalf Backup: Backs-Up /usr/etc & /home only."
-	echo	
+	echo "Full Backup: Backs-Up Both entire root directory"
+	echo "Half Backup: Backs-Up /usr/etc & /home only."
 	read -p "Full or Half: " ans
 
-	if [[ "$ans" == "Full" && ! -z "$ans" ]];
-		then
-			echo -e "\nInitiating Full Backup..."
-			tar_bup "$1" "$fbup" "root_$(date --i)"
+	if [[ ! -z "$ans" && "$ans" =~ ^[F|f]ull ]]; then
+		echo "Initiating Full Backup..."; echo
+		tar_bup "$fbup" "root_$(date --i)" "$dbpt"
 
-	elif [[ "$ans" == "Half" && ! -z "$ans" ]];
-		then
-			echo -e "\nInitiating Half Backup..."
-			tar_bup "$1" "$hbup" "usr_$(date --i)"
+	elif [[ ! -z "$ans" && "$ans" =~ ^[H|h]alf ]]; then
+		echo "Initiating Half Backup..."; echo
+		tar_bup "$hbup" "usr_$(date --i)" "$dbpt"
 
 	else
 			show_menu
@@ -179,10 +75,9 @@ bup_type() {
 
 #Function for Backing-Up.
 tar_bup() {
-	mkdir -p "$1"
-	tar -czpf "$3" $2 2>/dev/null
-	mv "$3" "$1"
-	echo -e "Configs Backed-Up at \n$1"
+	tar -czpf "$2" $1 2>/dev/null
+	mov "$2" "$3"
+	echo -e "Configs Backed-Up at \n$3"
 }
 
 #Fix tar cannot create symlink error, cause android's storage filesystem format doesnt support moving/copying symlinks
@@ -194,9 +89,8 @@ fix_rest() {
 
 #Funtcion for Restoring.
 tar_rest() {
-	echo -e "\nHere is the list of all your Backups:"
-	ls "$1"
-	echo
+	echo "Here is the list of all your Backups:"
+	lst "$1"
 	read -p "Enter File Name: " flnm
 	fix_rest "$1" "$flnm"
 	chk_file "$flnm"
@@ -215,32 +109,24 @@ case $opt in
 		;;
 
 	"Backup")
-		echo -e "\nCreating Backup....."
-		read_cfg 'Backup'
+		bup_type
  		echo
  		;;
 
 	"Restore")
-		echo -e "\nRestoring Backup..."
-		read_cfg 'Restore'
+		tar_rest "$dbpt"
 		echo -e "\nConfigs Restored!"
 		echo
         ;;
             
 	"List-all")
 		echo "Here is the list of all your Backups:"
-		echo
-		read_cfg 'List-all'
+		lst "$dbpt"
 		echo
 		;;
 
 	"Remove")
-		read_cfg 'Remove'
-		echo
-		;;
-
-	"Custom-path")
-		cst_bpt
+		rm_file "$dbpt"
 		echo
 		;;
             

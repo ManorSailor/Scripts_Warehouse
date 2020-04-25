@@ -31,7 +31,6 @@ spk() {
 #Do ya thing
 main() {
 	cd Backup_Script
-	cp -r .Backup_Utility $etc
 	cp backup $bin
 
 	cd $main_dir/Post_Install
