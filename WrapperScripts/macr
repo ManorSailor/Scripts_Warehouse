@@ -1,0 +1,32 @@
+#!/bin/bash
+#Mac_Address_Randomizer
+#0.1
+#Initialize, check root access and install required packages.
+init() {
+#For some weird reason the brackets '[]' are affecting the exit code, this is either a bug in termux or probably its not.
+#This check below is returning 1 whilst using brackets which is weird, they shouldn't have any effect on the exit code.
+#Even the  official gnu bash documentaion has no say on brackets affecting exit code.
+#It took me whole 3 days of head banging just to make this one liner work, just because of that bug. Hell.
+#Oh and just a tip, if you are using local variables in a function the content will not be accessible outside of the function.
+$(timeout --preserve-status 1 su) || { echo "Root access not avaliable!"; exit 1; }
+[[ "$(command -v tsu)" && "$(command -v macchanger)" ]] || { echo "Installing neccessary packages..."; pkg install -y tsu macchanger; }
+#perma_mac="$(sudo macchanger | grep -a "")" #Var for storing permanent mac
+pars_args $@
+}
+#
+#Parse args
+pars_args() {
+while [[ $# -le 2 ]]; do
+	case "$1" in
+		-s|--show)
+			mac_cmd "wlan0"
+			;;
+	esac
+  break
+done
+}
+#
+mac_cmd() { sudo macchanger $1 $2; }
+
+
+init $@
