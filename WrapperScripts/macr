@@ -21,6 +21,18 @@ while [[ $# -le 2 ]]; do
 		-s|--show)
 			mac_cmd "wlan0"
 			;;
+		-p|--perm)
+			mac_cmd -p "wlan0"
+			;;
+		-r|--rand)
+			mac_cmd -r "wlan0"
+			;;
+		-a|--another)
+			mac_cmd -A "wlan0"
+			;;
+		*)
+			mac_cmd -a "wlan0"
+			;;
 	esac
   break
 done
