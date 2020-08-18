@@ -3,10 +3,10 @@
 #Written by Sars.
 #
 #Fire_it_up!{{{
-run() {
-	if [[ "$1" == "wa" || "$1" == "WA" ]]; then
+on_run() {
+	if [[ "$1" =~ ^[w|W][a|A] ]]; then
 		wa_cl
-	elif [[ "$1" == "tg" || "$1" == "TG" ]]; then
+	elif [[ "$1" =~ ^[t|T][g|G] ]]; then
 		tg_cl
 	else
 		wa_cl
@@ -40,4 +40,4 @@ echo "WhatsApp dir. cleaned!"
 }	
 #}}}
 
-run "$@"
+on_run "$@"
