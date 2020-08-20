@@ -18,8 +18,8 @@ on_run() {
 tg_cl() {
 local trash
 local tg_dir="$HOME/storage/shared/Telegram"
-	for trash in "${sub_dirs[@]}"; do
-		rm -rf "$fls"/*
+	for trash in "${tg_dir[@]}"; do
+		rm -rf "$trash"/*
 	done
 echo "Telegram dir. cleaned!"
 }
@@ -29,8 +29,8 @@ echo "Telegram dir. cleaned!"
 wa_cl() {
 local trash
 local wa_dir="$HOME/storage/shared/WhatsApp/Media"
-	for trash in "${sub_dirs[@]}"; do
-		rm -rf "$fls"/*
+	for trash in "${wa_dir[@]}"; do
+		rm -rf "$trash"/*
 	done
 echo "WhatsApp dir. cleaned!"
 }	
