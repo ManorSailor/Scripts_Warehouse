@@ -16,11 +16,9 @@ on_run() {
 
 #Telegram_cleaner{{{
 tg_cl() {
-local fls
-local tg_dir="$HOME/storage/shared/Telegram/"
-local sub_dirs=('Telegram Audio' 'Telegram Documents' 'Telegram Video' 'Telegram Images')
-cd "$tg_dir"
-	for fls in "${sub_dirs[@]}"; do
+local trash
+local tg_dir="$HOME/storage/shared/Telegram"
+	for trash in "${sub_dirs[@]}"; do
 		rm -rf "$fls"/*
 	done
 echo "Telegram dir. cleaned!"
@@ -29,11 +27,9 @@ echo "Telegram dir. cleaned!"
 
 #Whatsapp_cleaner{{{
 wa_cl() {
-local fls
-local wa_dir="$HOME/storage/shared/WhatsApp/Media/"
-local sub_dirs=("WallPaper" "WhatsApp Animated Gifs/Private" "WhatsApp Animated Gifs/Sent" "WhatsApp Audio/Private" "WhatsApp Audio/Sent" "WhatsApp Documents/Private" "WhatsApp Documents/Sent" "WhatsApp Images/Private" "WhatsApp Images/Sent" "WhatsApp Profile Photos" "WhatsApp Stickers" "WhatsApp Video/Private" "WhatsApp Video/Sent" "WhatsApp Voice Notes/202015" "WhatsApp Voice Notes/202016")
-cd "$wa_dir"
-	for fls in "${sub_dirs[@]}"; do
+local trash
+local wa_dir="$HOME/storage/shared/WhatsApp/Media"
+	for trash in "${sub_dirs[@]}"; do
 		rm -rf "$fls"/*
 	done
 echo "WhatsApp dir. cleaned!"
